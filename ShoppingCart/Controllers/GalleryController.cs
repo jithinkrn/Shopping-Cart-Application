@@ -14,7 +14,7 @@ namespace ShoppingCart.Controllers
 
         public GalleryController(DBContext dbContext)
         {
-            //this comment is from gab reyes + jithin's comment ascadsfbva ..... sss
+            //this comment is from gab reyes + jithin's comment ascadsfbva
             this.dbContext = dbContext;
             //TEst
         }
