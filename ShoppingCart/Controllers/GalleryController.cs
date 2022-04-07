@@ -14,7 +14,7 @@ namespace ShoppingCart.Controllers
 
         public GalleryController(DBContext dbContext)
         {
-            //this comment is from gab
+            //this comment is from gab reyes
             this.dbContext = dbContext;
         }
         public IActionResult Index()
