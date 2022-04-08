@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
+using System.Security.Cryptography;
+using System.Text;
 
 
 namespace ShoppingCart
@@ -21,50 +23,42 @@ namespace ShoppingCart
             SeedCustomer();
             SeedProduct();
             SeedProductRating();
-            //aaabbbcc
+            
             
         }
-               
-        private void SeedCustomer()
 
+
+        public void SeedCustomer()
         {
+            // get a hash algorithm object
+            HashAlgorithm sha = SHA256.Create();
 
+            string[] usernames = { "Tom_Cruise01", "Brad_Pitt01", "Brad_Pitt02", "Tom_Cruise02", "Al_Pacino01" };
+            string[] FullNames = { "Tom Cruise", "Brad Pitt", "Brad Pitt", "Tom Cruise", "Al Pacino" };
+            // as our system's default, new users have their 
+            // passwords set as "secret"
+            string[] password = { "secret01", "secret02", "secret03", "secret04", "secret05" };
 
-            dbContext.Add(new Customer
-            {
-                UserName = "Tom_Cruise01",
-                FullName = "Tom Cruise",
-                Password = "!@#$%FGs",
-            });
+            for (int i = 0; i < usernames.Length; i++)
+            {                           
+                // we are concatenating (i.e. username + password) to generate
+                // a password hash to store in the database
+                string combo = usernames[i] + password[i];
+                byte[] hash = sha.ComputeHash(Encoding.UTF8.GetBytes(combo));
 
-            dbContext.Add(new Customer
-            {
-                UserName = "Brad_Pitt01",
-                FullName = "Brad Pitt",
-                Password = "@#$%ASDF",
-            });
+                // add customers
+                dbContext.Add(new Customer
+                {
+                    UserName = usernames[i],
+                    FullName = FullNames[i],
+                    PassHash = hash
+                });
 
-            dbContext.Add(new Customer
-            {
-                UserName = "Brad_Pitt02",
-                FullName = "Brad Pitt",
-                Password = "!@#$JKas",
-            });
-            dbContext.Add(new Customer
-            {
-                UserName = "Tom_Cruise02",
-                FullName = "Tom Cruise",
-                Password = "!@#%^&*E",
-            });
-            dbContext.Add(new Customer
-            {
-                UserName = "Al_Pacino01",
-                FullName = "Al Pacino",
-                Password = "!@#%^&*W",
-            });
-
-            dbContext.SaveChanges();
+                // commit our changes in the database
+                dbContext.SaveChanges();
+            }
         }
+            
         private void SeedProduct()
         {
             dbContext.Add(new Product
@@ -73,7 +67,7 @@ namespace ShoppingCart
                 ProductName = ".NET Charts",
                 Price = 99.00,
                 Description = "Brings powerful charting capabilities to your .NET applications.",
-                ImagePath = "\\ABC\\XYZ\\dotNETCharts.Jpg"
+                ImageName = "dotNETCharts.Jpg"
 
             });
 
@@ -83,7 +77,7 @@ namespace ShoppingCart
                 ProductName = ".NET Paypal",
                 Price = 69.00,
                 Description = "Integrate your .NET apps with paypal the easy way!",
-                ImagePath = "\\ABC\\XYZ\\sample1.JPG"
+                ImageName = "sample1.JPG"
             });
 
             dbContext.Add(new Product
@@ -91,7 +85,7 @@ namespace ShoppingCart
                 ProductName = ".NET ML",
                 Price = 299.00,
                 Description = "Supercharged .NET machine learning libraries.",
-                ImagePath = "\\ABC\\XYZ\\sample2.JPG"
+                ImageName = "sample2.JPG"
             });
 
             dbContext.Add(new Product
@@ -99,7 +93,7 @@ namespace ShoppingCart
                 ProductName = ".NET Analytics",
                 Price = 299.00,
                 Description = "Performs data mining and analytics easily in .NET.",
-                ImagePath = "\\ABC\\XYZ\\sample3.JPG"
+                ImageName = "sample3.JPG"
             });
 
             dbContext.Add(new Product
@@ -107,7 +101,7 @@ namespace ShoppingCart
                 ProductName = ".NET Logger",
                 Price = 299.00,
                 Description = "Logs and aggregates events easily in your .NET apps.",
-                ImagePath = "\\ABC\\XYZ\\sample4.JPG"
+                ImageName = "sample4.JPG"
             });
 
             dbContext.Add(new Product
@@ -115,7 +109,7 @@ namespace ShoppingCart
                 ProductName = ".NET Numerics",
                 Price = 199.00,
                 Description = "Powerful numerical method for your .NET simulations.",
-                ImagePath = "\\ABC\\XYZ\\sample4.JPG"
+                ImageName = "sample4.JPG"
             });
 
             dbContext.SaveChanges();
@@ -138,8 +132,7 @@ namespace ShoppingCart
                         Rating = 1
                     };
                     customer.ProductRatings.Add(productRating1);
-                    product.ProductRatings.Add(productRating1);
-                               
+                    product.ProductRatings.Add(productRating1);                               
                 }
 
                dbContext.SaveChanges();

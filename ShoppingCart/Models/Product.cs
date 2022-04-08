@@ -31,7 +31,10 @@ namespace ShoppingCart.Models
         public string Description { get; set; }
         [Required]
         [MaxLength(400)]
-        public string ImagePath { get; set; }
+        public string ImageName { get; set; }
+
+        //Reward points for discounts. cant be null. only get updated after purchase
+        public int? RewardPoints { get; set; }
 
         //Products has 1 to many relationship with ShoppingCart 
         public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
