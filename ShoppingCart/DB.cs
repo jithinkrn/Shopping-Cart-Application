@@ -10,11 +10,9 @@ using System.Text;
 namespace ShoppingCart
 {
     public class DB
-    {
+    {           
 
-       //Change from jithin branch
 
- aster(Do_Not_Commit/Push)
         private DBContext dbContext;
 
         public DB(DBContext dbContext)
@@ -26,12 +24,11 @@ namespace ShoppingCart
         {
             SeedCustomer();
             SeedProduct();
-            SeedProductRating();
-            
+            SeedProductRating();            
             
         }
 
-
+      
         public void SeedCustomer()
         {
             // get a hash algorithm object
