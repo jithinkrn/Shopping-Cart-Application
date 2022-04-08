@@ -34,7 +34,7 @@ namespace ShoppingCart
             HashAlgorithm sha = SHA256.Create();
 
             string[] usernames = { "Tom_Cruise01", "Brad_Pitt01", "Brad_Pitt02", "Tom_Cruise02", "Al_Pacino01" };
-            string[] FullNames = { "Tom Cruise", "Brad Pitt", "Brad Pitt", "Tom Cruise", "Al Pacino" };
+            string[] fullnames = { "Tom Cruise", "Brad Pitt", "Brad Pitt", "Tom Cruise", "Al Pacino" };
             // as our system's default, new users have their 
             // passwords set as "secret"
             string[] password = { "secret01", "secret02", "secret03", "secret04", "secret05" };
