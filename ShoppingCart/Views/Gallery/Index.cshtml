@@ -14,7 +14,7 @@
 @*search bar*@
 <div class="container">
     <div class="row">
-        <form action="Gallery" method="post" class="col-12">
+        <form action="/Gallery/" method="post" class="col-12">
             <input type="search" class="form-control" name="search" id="search" placeholder="Search..." value="@ViewData["searchInput"]" />
         </form>
     </div>
@@ -24,11 +24,14 @@
 @*sort products*@
 <div class="container">
     <div class="row">
-        <form action="Gallery" method="post" class="col-12 py-2">
+        <form action="/Gallery/" method="post" class="col-10 py-2">
             <label class="form-check-inline">Sort by: &nbsp;</label>
-            <button type="submit" class="btn btn-link p-0" name="sort" value="1">Price ascending,</button>
-            <button type="submit" class="btn btn-link" name="sort" value="2">Price descending</button>
+            <button type="submit" class="btn btn-link p-0" formaction="Index?search=@ViewData["searchInput"]&sort=asc">Price ascending,</button>
+            <button type="submit" class="btn btn-link" formaction="Index?search=@ViewData["searchInput"]&sort=desc">Price descending</button>
         </form>
+        <div class="text-right pt-3 col-2">
+            <p>@searchResult.Count products found</p>
+        </div>
     </div>
 </div>
 
@@ -50,21 +53,24 @@
                 @{
                     foreach (var product in searchResult)
                     {
-                        <div class="col-4 p-3">
+                        <div class="col-4 p-2">
                             <div class="card">
-                                <form action="" method="post">
+                                <form action="/Gallery/Product" method="post">
                                     <button type="submit" class="btn btn-link p-0" name="productId" value="@product.Id">
-                                        <img src="~/Images/@product.ImageName" class="card-img-top" alt="...">
+                                        <img src="~/Images/@product.ImageName" class="card-img-top" style="height: 260px" alt="...">
                                     </button>
                                 </form>
                                 <div class="card-body">
-                                    <form action="Gallery" method="post">
+                                    <form action="/Gallery/Product" method="post">
                                         <button type="submit" class="btn btn-link text-body p-0 m-0" name="productId" value="@product.Id">
                                             <h5 class="card-title">@product.ProductName</h5>
                                         </button>
                                     </form>
                                     <p class="card-text">@product.Description</p>
-                                    <button class="btn btn-outline-primary"><b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add to cart</button>
+                                    @*action to change to cartcontroller/addcart*@
+                                    <form action="" method="post">
+                                        <button class="btn btn-outline-primary"><b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add to cart</button>
+                                    </form>
                                 </div>
                             </div>
                         </div>
@@ -74,4 +80,3 @@
         </div>
     }
 }
-

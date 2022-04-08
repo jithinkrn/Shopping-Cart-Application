@@ -1,14 +1,30 @@
-﻿@{ 
+﻿@{
 
     ViewData["Title"] = "Product";
     Product product = (Product)ViewData["product"];
 
-    }
+}
 
 <div class="text-center">
-<h1 class="display-4">Products</h1>
-<p>@product.ProductName </p>
-<p>@product.Description </p>
-<p>@product.ImageName </p>
-    
+    <h1 class="display-4">Products</h1>
+    <p>@product.ProductName </p>
+    <p>@product.Description </p>
+    <p>@product.ImageName </p>
+
+</div>
+
+<div class="container">
+    <div class="col-12">
+        <div class="card">
+            <img src="~/Images/@product.ImageName" class="col-6 text-left p-0" alt="...">
+            <div class="card-body">
+                <h5 class="card-title">@product.ProductName</h5>
+                <p class="card-text">@product.Description</p>
+                @*action to change to cartcontroller/addcart*@
+                <form action="" method="post">
+                    <button class="btn btn-outline-primary"><b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add to cart</button>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
