@@ -9,15 +9,15 @@ namespace ShoppingCart.Models
         public Session()
         {
             // create primary key upon creation
-            Id = new Guid();
-
+            
             // get the current Unix timestamp to track
             // user login
             Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
         }
 
         // primary key
-        public Guid Id { get; set; }
+        [Key]
+        public string Id { get; set; }
 
         // session timestamp. 
         

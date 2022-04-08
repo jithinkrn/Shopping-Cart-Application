@@ -22,8 +22,7 @@ namespace ShoppingCart.Models
 
         //forien key to map to Product
         public virtual Guid ProductID { get; set; }
-
-        public int OrderQty { get; set; }
+        
 
      
     }

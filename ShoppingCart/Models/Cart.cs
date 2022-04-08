@@ -6,10 +6,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingCart.Models
 {
-    public class ShoppingCart
+    public class Cart
     {
 
-        public ShoppingCart()
+        public Cart()
         {
             Id = new Guid();
         }
