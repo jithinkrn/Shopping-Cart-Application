@@ -12,7 +12,7 @@ namespace ShoppingCart.Models
         {
             Id = new Guid();
            
-            ShoppingCarts = new List<ShoppingCart>();
+            ShoppingCarts = new List<Cart>();
             ActivationCodes = new List<ActivationCode>();
             ProductRatings = new List<ProductRating>();
         }
@@ -37,7 +37,7 @@ namespace ShoppingCart.Models
         public int? RewardPoints { get; set; }
 
         //Products has 1 to many relationship with ShoppingCart 
-        public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
+        public virtual ICollection<Cart> ShoppingCarts { get; set; }
 
         //Products has 1 to many relationship with ActivationCode 
         public virtual ICollection<ActivationCode> ActivationCodes { get; set; }

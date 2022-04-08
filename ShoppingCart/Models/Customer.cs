@@ -10,7 +10,7 @@ namespace ShoppingCart.Models
         public Customer()
         {
             Id = new Guid();
-            ShoppingCarts = new List<ShoppingCart>();
+            ShoppingCarts = new List<Cart>();
             Purchases = new List<Purchase>();
             ProductRatings = new List<ProductRating>();
         }
@@ -34,7 +34,7 @@ namespace ShoppingCart.Models
         public int? RewardPoint { get; set; }
 
         //Customer has 1 to many relationship with ShoppingCart
-        public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
+        public virtual ICollection<Cart> ShoppingCarts { get; set; }
 
         //Customer has 1 to many relationship with Purchase
         public virtual ICollection<Purchase> Purchases { get; set; }
