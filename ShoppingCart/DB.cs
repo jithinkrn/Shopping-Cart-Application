@@ -31,7 +31,7 @@ namespace ShoppingCart
             
         }
 
-
+        //test
         public void SeedCustomer()
         {
             // get a hash algorithm object
