@@ -21,8 +21,14 @@ namespace ShoppingCart
             SeedCustomer();
             SeedProduct();
             SeedProductRating();
+            Calculate ();
         }
 
+        private void Calculate()
+        {
+
+            //abccd
+        }
 
         private void SeedCustomer()
         {
