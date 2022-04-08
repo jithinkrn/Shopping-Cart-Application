@@ -21,17 +21,14 @@ namespace ShoppingCart
             SeedCustomer();
             SeedProduct();
             SeedProductRating();
-            Calculate ();
+            
         }
-
-        private void Calculate()
-        {
-
-            //abccd
-        }
-
+               
         private void SeedCustomer()
+
         {
+
+
             dbContext.Add(new Customer
             {
                 UserName = "Tom_Cruise01",
