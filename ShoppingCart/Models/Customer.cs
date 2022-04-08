@@ -25,9 +25,10 @@ namespace ShoppingCart.Models
         [Required]
         [MaxLength(50)]
         public string FullName { get; set; }
+
+        // Hash'ed password
         [Required]
-        [MaxLength(8)]
-        public string Password { get; set; }
+        public byte[] PassHash { get; set; }
 
         //Customer has 1 to many relationship with ShoppingCart
         public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
