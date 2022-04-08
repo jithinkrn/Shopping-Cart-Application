@@ -11,7 +11,7 @@ namespace ShoppingCart
 {
     public class DB
     {
-       //test1
+       //Change from test branch
         private DBContext dbContext;
 
         public DB(DBContext dbContext)
