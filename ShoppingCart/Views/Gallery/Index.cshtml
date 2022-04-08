@@ -1,9 +1,77 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿
 @{
+    ViewData["Title"] = "Index";
+    List<Product> searchResult = (List<Product>)ViewData["searchResult"];
 }
-<div class="text-center">
-<h1 class="display-4">Gallery</h1>
-<p>Page is under construction. Come back Next week</p>
+
+
+@*carousel*@
+<div class="container">
+    <!-- Content here -->
 </div>
+
+
+@*search bar*@
+<div class="container">
+    <div class="row">
+        <form action="Gallery" method="post" class="col-12">
+            <input type="search" class="form-control" name="search" id="search" placeholder="Search..." value="@ViewData["searchInput"]" />
+        </form>
+    </div>
+</div>
+
+
+@*sort products*@
+<div class="container">
+    <div class="row">
+        <form action="Gallery" method="post" class="col-12 py-2">
+            <label class="form-check-inline">Sort by: &nbsp;</label>
+            <button type="submit" class="btn btn-link p-0" name="sort" value="1">Price ascending,</button>
+            <button type="submit" class="btn btn-link" name="sort" value="2">Price descending</button>
+        </form>
+    </div>
+</div>
+
+
+@*product list*@
+@{
+    if (searchResult.Count == 0)
+    {
+        <div class="container">
+            <div class="text-center p-5">
+                <h2>No results... :(</h2>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div class="container">
+            <div class="row">
+                @{
+                    foreach (var product in searchResult)
+                    {
+                        <div class="col-4 p-3">
+                            <div class="card">
+                                <form action="" method="post">
+                                    <button type="submit" class="btn btn-link p-0" name="productId" value="@product.Id">
+                                        <img src="~/Images/@product.ImageName" class="card-img-top" alt="...">
+                                    </button>
+                                </form>
+                                <div class="card-body">
+                                    <form action="Gallery" method="post">
+                                        <button type="submit" class="btn btn-link text-body p-0 m-0" name="productId" value="@product.Id">
+                                            <h5 class="card-title">@product.ProductName</h5>
+                                        </button>
+                                    </form>
+                                    <p class="card-text">@product.Description</p>
+                                    <button class="btn btn-outline-primary"><b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add to cart</button>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                }
+            </div>
+        </div>
+    }
+}
+

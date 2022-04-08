@@ -18,10 +18,29 @@ namespace ShoppingCart.Controllers
             this.dbContext = dbContext;
             //TEst
         }
-        public IActionResult Index()
+        public IActionResult Index(string search, int sort, Guid productId)
         {
+            if (search == null)
+            {
+                search = "";
+            }
+
+            List<Product> searchResult = dbContext.Products.Where(x => x.ProductName.Contains(search)).ToList();
+            ViewData["searchResult"] = searchResult;
+            ViewData["searchInput"] = search;
+
+            if (sort == 1)
+            {
+                ViewData["searchResult"] = searchResult.OrderBy(x => x.Price).ToList();
+            }
+            else if (sort == 2)
+            {
+                ViewData["searchResult"] = searchResult.OrderByDescending(x => x.Price).ToList();
+            }
+
             return View();
         }
+
         public IActionResult Product(string prodSclicked)
         {
 
