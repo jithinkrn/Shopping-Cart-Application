@@ -50,7 +50,7 @@ namespace ShoppingCart
                 dbContext.Add(new Customer
                 {
                     UserName = usernames[i],
-                    FullName = FullNames[i],
+                    FullName = fullnames[i],
                     PassHash = hash
                 });
 
