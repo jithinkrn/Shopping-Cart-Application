@@ -30,6 +30,9 @@ namespace ShoppingCart.Models
         [Required]
         public byte[] PassHash { get; set; }
 
+        //Reward points earned. Can be null as well
+        public int? RewardPoint { get; set; }
+
         //Customer has 1 to many relationship with ShoppingCart
         public virtual ICollection<ShoppingCart> ShoppingCarts { get; set; }
 

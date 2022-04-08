@@ -20,5 +20,6 @@ namespace ShoppingCart.Models
         public DbSet<ProductRating> ProductRatings { get; set; }
         public DbSet<Purchase> Purchases { get; set; }
         public DbSet<ShoppingCart> ShoppingCarts { get; set; }
+        public DbSet<Session> Sesssions { get; set; }
     }
 }
