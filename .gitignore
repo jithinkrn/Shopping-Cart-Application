@@ -363,5 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 # Visual Studio 2019 app setting files
-appsettings.json
-appsettings.Development.json
+ShoppingCart/appsettings.Development.json
+ShoppingCart/appsettings.json
