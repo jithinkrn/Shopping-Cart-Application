@@ -11,7 +11,7 @@ namespace ShoppingCart
 {
     public class DB
     {
-        //Gittest1
+       
         private DBContext dbContext;
 
         public DB(DBContext dbContext)
