@@ -1,9 +1,34 @@
 ﻿
 @{
     ViewData["Title"] = "Home Page";
+    string customerName = ViewBag.CurrentCustomer.FullName;
+    List<Cart> itemsinCart = ViewBag.CustomerCart;
+    Product newitem = ViewBag.NewItem;
+
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1>Welcome @customerName !</h1>
+
+    <h3>Products</h3>
+    <table>
+        @{
+            foreach (Cart item in itemsinCart)
+            {
+                <tr>
+                    <td>@item.ProductId</td>
+                </tr>
+            }
+        }
+
+        
+        <tr>
+            <td>@newitem.ProductName</td>
+        </tr>
+    </table>
+   
+    <form action="Checkout" method="post">
+
+        <button type="submit">Checkout</button>
+    </form>
 </div>

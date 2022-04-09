@@ -1,8 +1,28 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    Dictionary<string, int>ListItemQuantities = ViewBag.ItemQty;
+    Dictionary<string, double>ListItemPrices = ViewBag.ItemPrice;
+    List<Product> RandomList = ViewBag.ListOfRandomProds;
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1 class="display-4">Thank you for your purchase!</h1>
+
+    <table>
+        @{ foreach (KeyValuePair<string, int> pair in ListItemQuantities)
+            {
+                <tr>
+                    <td>@pair.Key</td>
+                </tr>
+            }
+        }
+
+    </table>
+
+    <table>
+        <tr>
+            <td><button type="submit" formaction="Purchase/Index">Manage My Purchases</button></td>
+            <td><button type="submit" formaction="Gallery/Index">Continue Shopping</button></td>
+        </tr>
+    </table>
 </div>
