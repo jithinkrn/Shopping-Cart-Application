@@ -1,10 +1,15 @@
-﻿
-<form action="/Login/Login" method="POST">
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<h2>Login</h2>
+
+<form action="Login" method="post">
     <div style="text-align:center">
         <div class="my_tbl">
             <div class="my_row">
                 <div class="my_cell">
-                    Username:
+                    Username
                 </div>
                 <div class="my_cell">
                     <input name="username" />
@@ -12,7 +17,7 @@
             </div>
             <div class="my_row">
                 <div class="my_cell">
-                    Password:
+                    Password
                 </div>
                 <div class="my_cell">
                     <input name="password" type="password" />
