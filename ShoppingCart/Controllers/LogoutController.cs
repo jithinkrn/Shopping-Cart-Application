@@ -19,8 +19,30 @@ namespace ShoppingCart.Controllers
            
         }
         public IActionResult Index()
-        {
-            return View();
+        {// remove session from our database
+            if (Request.Cookies["SessionId"] != null)
+            {//session Id is converted to string as our Session controller has PK in string type//
+                //string sessionId = System.Guid.NewGuid().ToString();//
+              Guid sessionId = Guid.Parse(Request.Cookies["sessionId"]);
+
+
+                Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
+                if (session != null)
+                {
+                    // delete session record from our database;
+                    dbContext.Remove(session);
+
+                    // commit to save changes
+                    dbContext.SaveChanges();
+                }
+            }
+
+            // ask client to remove these cookies so that
+            // they won't be sent over next time
+            Response.Cookies.Delete("SessionId");
+            Response.Cookies.Delete("Username");
+
+            return RedirectToAction("Index", "Login");
         }
         
         

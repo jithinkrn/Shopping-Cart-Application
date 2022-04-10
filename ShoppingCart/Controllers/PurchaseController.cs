@@ -18,6 +18,7 @@ namespace ShoppingCart.Controllers
             this.dbContext = dbContext;
 
         }
+        [Route("Purchases")]
         public IActionResult Index()
         {
             return View();

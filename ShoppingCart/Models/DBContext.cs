@@ -29,6 +29,6 @@ namespace ShoppingCart.Models
         public DbSet<Session> Sessions { get; set; }
         public DbSet<ActivationCode> ActivationCodes { get; set; }
 
- 
+
     }
 }
