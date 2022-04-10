@@ -2,7 +2,6 @@
 
     ViewData["Title"] = "Product";
     Product product = ViewBag.product;
-    string uploadDir = ViewBag.uploadDir;
     string price = String.Format("S${0:0.00}", product.Price);
 
 }
@@ -16,7 +15,7 @@
                     <tbody>
                         <tr>
                             <td class="w-15">
-                                <img id="@product.ImageName" class="my_img" src="@uploadDir/@product.ImageName" />
+                                <img id="@product.ImageName" class="my_img" src="~/Images/@product.ImageName" />
                             </td>
                             <td class="w-15">
                                 <h2>@product.ProductName </h2>
@@ -30,15 +29,15 @@
                         
                          <tr>
                             <td class="rating_col">
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starYellow.png" />
+                                <img id="@product.ImageName" class="rating_img" src="~/Images/starYellow.png" />
                            
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starYellow.png" />
+                                <img id="@product.ImageName" class="rating_img" src="~/Images/starYellow.png" />
                           
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starYellow.png" />
+                                <img id="@product.ImageName" class="rating_img" src="~/Images/starYellow.png" />
                             
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+                                <img id="@product.ImageName" class="rating_img" src="~/Images/starYellow.png" />
                            
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+                                <img id="@product.ImageName" class="rating_img" src="~/Images/starWhite.png" />
                             </td>
                              <td>
                                  </td>
@@ -56,18 +55,18 @@
 
 </div>
 
-<div class="container">
+<!--<div class="container">
     <div class="col-12">
         <div class="card">
             <img src="~/Images/@product.ImageName" class="col-6 text-left p-0" alt="...">
             <div class="card-body">
                 <h5 class="card-title">@product.ProductName</h5>
-                <p class="card-text">@product.Description</p>
+                <p class="card-text">@product.Description</p>-->
                 @*action to change to cartcontroller/addcart*@
-                <form action="" method="post">
+                <!--<form action="" method="post">
                     <button class="btn btn-outline-primary"><b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add to cart</button>
                 </form>
             </div>
         </div>
     </div>
-</div>
+</div>-->

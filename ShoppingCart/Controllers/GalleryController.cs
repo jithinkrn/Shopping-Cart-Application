@@ -52,7 +52,7 @@ namespace ShoppingCart.Controllers
         {
             Product product = getProduct(productId);
 
-            ViewData["product"] = product;
+            ViewBag.product = product;
             return View();
 
         }
