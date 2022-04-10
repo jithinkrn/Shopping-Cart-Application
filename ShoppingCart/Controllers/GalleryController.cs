@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace ShoppingCart.Controllers
 {
@@ -15,12 +16,11 @@ namespace ShoppingCart.Controllers
 
         public GalleryController(DBContext dbContext)
         {
-            //this comment is from gab reyes + jithin's comment ascadsfbva
             this.dbContext = dbContext;
-            //TEst
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string search, string sort)
+    
         {
             //initial values on load
 
@@ -36,37 +36,53 @@ namespace ShoppingCart.Controllers
         }
 
         public IActionResult Product(string prodSclicked)
+
         {
+            //Start cookie session
+            //string sessionId = System.Guid.NewGuid().ToString();
+            //Response.Cookies.Append("sessionId", sessionId);
 
-            prodSclicked = ".NET Charts";
+            //Delete cookies at logout
+            //Response.Cookies.Delete("sessionId");
 
-            if (prodSclicked == null)
+            if (search == null)
             {
-                return RedirectToAction("Index", "Gallery");
+                search = "";
             }
 
-            Product product = getProduct(prodSclicked);
+            List<Product> searchResult = dbContext.Products.Where(x => x.ProductName.Contains(search)).ToList();
+            ViewData["searchResult"] = searchResult;
+            ViewData["searchInput"] = search;
 
-            if (product == null)                
+            if (sort == "asc")
             {
-                return RedirectToAction("Index", "Gallery");
+                ViewData["searchResult"] = ((List<Product>)ViewData["searchResult"]).OrderBy(x => x.Price).ToList();
             }
-            ViewBag.product = product;
-            ViewBag.uploadDir = "../" + UPLOAD_DIR;
+            else if (sort == "desc")
+            {
+                ViewData["searchResult"] = ((List<Product>)ViewData["searchResult"]).OrderByDescending(x => x.Price).ToList();
+            }
+
             return View();
-          
         }
-        public Product getProduct(string productName)
-        {                        
-            
-            
+
+        public IActionResult Product(Guid productId)
+        {
+            Product product = getProduct(productId);
+
+            ViewBag.product = product;
+            return View();
+
+        }
+        public Product getProduct(Guid productId)
+        {
             Product product = dbContext.Products.Where(x =>
-               x.ProductName == productName
+               x.Id == productId
            ).First();
 
             return product;
 
         }
-        
+
     }
 }
