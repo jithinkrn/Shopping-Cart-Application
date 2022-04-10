@@ -68,7 +68,7 @@ namespace ShoppingCart
                 ProductName = ".NET Charts",
                 Price = 99.00,
                 Description = "Brings powerful charting capabilities to your .NET applications.",
-                ImageName = "dotNETCharts.Jpg"
+                ImageName = "dotNETCharts.jpg"
 
             });
 
@@ -78,7 +78,7 @@ namespace ShoppingCart
                 ProductName = ".NET Paypal",
                 Price = 69.00,
                 Description = "Integrate your .NET apps with paypal the easy way!",
-                ImageName = "sample1.JPG"
+                ImageName = "dotNETPaypal.jpg"
             });
 
             dbContext.Add(new Product
@@ -86,7 +86,7 @@ namespace ShoppingCart
                 ProductName = ".NET ML",
                 Price = 299.00,
                 Description = "Supercharged .NET machine learning libraries.",
-                ImageName = "sample2.JPG"
+                ImageName = "dotNETML.jpg"
             });
 
             dbContext.Add(new Product
@@ -94,7 +94,7 @@ namespace ShoppingCart
                 ProductName = ".NET Analytics",
                 Price = 299.00,
                 Description = "Performs data mining and analytics easily in .NET.",
-                ImageName = "sample3.JPG"
+                ImageName = "dotNETAnalytics.jpg"
             });
 
             dbContext.Add(new Product
@@ -102,7 +102,7 @@ namespace ShoppingCart
                 ProductName = ".NET Logger",
                 Price = 299.00,
                 Description = "Logs and aggregates events easily in your .NET apps.",
-                ImageName = "sample4.JPG"
+                ImageName = "dotNETLogger.jpg"
             });
 
             dbContext.Add(new Product
@@ -110,7 +110,7 @@ namespace ShoppingCart
                 ProductName = ".NET Numerics",
                 Price = 199.00,
                 Description = "Powerful numerical method for your .NET simulations.",
-                ImageName = "sample4.JPG"
+                ImageName = "dotNETNumerics.jpg"
             });
 
             dbContext.SaveChanges();
