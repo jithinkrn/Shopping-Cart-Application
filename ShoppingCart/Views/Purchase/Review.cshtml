@@ -1,8 +1,66 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+
+    ViewData["Title"] = "Product";
+    Product product = ViewBag.product;
+    string uploadDir = ViewBag.uploadDir;
+    string price = String.Format("S${0:0.00}", product.Price);
+
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <table class="table table-image">
+                    <tbody>
+                        <tr>
+                            <td class="w-15">
+                                <img id="@product.ImageName" class="my_img" src="@uploadDir/@product.ImageName" />
+                            </td>
+                            <td class="w-15">
+                                <h2>@product.ProductName </h2>
+                                <p>@product.Description </p>
+                                <p><b>@price</b></p>
+                                <p>
+                                    <button type="button" class="btn btn-primary">Buy Again</button>
+                                </p>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td class="rating_col">
+                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+
+                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+
+                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+
+                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+
+                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+                            </td>
+                            <td>
+                            </td>
+                        </tr>
+
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <hr>
+        <h3>Share your experience</h3>
+        <form>
+            <div class="form-group">
+                <label for="comment"></label>
+                <textarea class="form-control" rows="5" id="comment"></textarea>
+            </div>
+            <div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
+        </form>
+
+</div>
+
 </div>
