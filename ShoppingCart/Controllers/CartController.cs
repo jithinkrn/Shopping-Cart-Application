@@ -79,6 +79,92 @@ namespace ShoppingCart.Controllers
 
             db.SaveChanges();
         }
+        public object ViewCart()
+        {
+            Session session = GetSession();
+            if (session == null)
+            {
+                ViewData["Cart"] = new List<Cart>();
+                return View();
+            }
+            Guid customerId = session.Customer.Id;
+
+            List<Cart> cartItems = db.Carts.Where(x => x.CustomerId == customerId).ToList();
+            ViewData["cart"] = cartItems;
+
+            string userCartAmt = cartItems.Sum(x => x.OrderQty * x.ProductId.Price).ToString("#,0.00");
+            ViewData["userCartAmt"] = userCartAmt;
+
+            return View();
+        }
+        public IActionResult Update([FromBody] UpdateCart values)
+        {
+            string username = Request.Cookies["Username"];
+            Customer customerId = db.Customers.FirstOrDefault(x => x.UserName == username);
+            Guid customer = customers.Id;
+            int newQuantity;
+            string userCartAmt;
+
+            newQuantity = values.Quantity;
+
+            Cart cartItem = db.Carts.FirstOrDefault(x => x.CustomerId == customerid && x.Product.ProductID == values.ProductId);
+
+            if(cartItem != null)
+            {
+                cartItem.OrderQty = newQuantity;
+            }
+            db.SaveChanges();
+
+            double amt = db.Carts.Where(x => x.CustomerId == customerid).Sum(x => x.OrderQty * x.ProductId.price);
+
+            userCartAmt = Math.Round(amt, 2).ToString("#,00");
+
+            return Json(new
+            {
+                status = "success", userCartAmt
+                
+            });
+        }
+        public IActionResult Remove([FromBody] RemoveCart item)
+        {
+            string username = Request.Cookies["Username"];
+            Customer customers = db.Customers.FirstOrDefault(x => x.UserName == username);
+            Guid customer = customers.Id;
+            int productId = item.ProductId;
+
+            Cart cartItems = db.Carts.FirstOrDefault(x => x.CustomerId == customerid && x.Product.ProductID == item.ProductId);
+
+            db.Remove(cartItems);
+
+            db.SaveChanges();
+
+            double amt = db.Carts.Where(x => x.CustomerId == customerId).Sum(x => x.Quantity * x.Product.UnitPrice);
+
+            string userCartAmt = Math.Round(amt, 2).ToString("#,0.00");
+
+            return Json(new
+            {
+                status = "success",
+                userCartAmt
+            });
+        }
+        private Session GetSession()
+        {
+            if (Request.Cookies["SessionId"] == null)
+            {
+                return null;
+            }
+
+            Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
+            Session session = db.Sessions.FirstOrDefault(x =>
+                x.Id == sessionId
+            );
+
+            return session;
+        }
+
+
+
 
         //will be used in the cart page
         public void SubtractFromCart(string productName, Customer currentUser)
