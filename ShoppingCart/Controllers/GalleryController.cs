@@ -11,6 +11,7 @@ namespace ShoppingCart.Controllers
     public class GalleryController : Controller
     {
         private DBContext dbContext;
+        private const string UPLOAD_DIR = "Images";
 
         public GalleryController(DBContext dbContext)
         {
@@ -18,10 +19,22 @@ namespace ShoppingCart.Controllers
             this.dbContext = dbContext;
             //TEst
         }
+
         public IActionResult Index()
         {
+            //initial values on load
+
+            //check who is logged in first. if no log in, currentCustomer = guest user
+            Customer currentCustomer = dbContext.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+            //initialize values of ViewBag.CartContents with CountNumberOfItems(currentCustomer), initialize ViewBag.CurrentUserName to currentCustomer
+            ViewBag.CurrentUserName = currentCustomer.FullName;
+            CartController JustForTheMethod = new CartController(dbContext);
+            ViewBag.CartContents = JustForTheMethod.CountNumberOfItems(currentCustomer);
+
+
             return View();
         }
+
         public IActionResult Product(string prodSclicked)
         {
 
@@ -38,12 +51,15 @@ namespace ShoppingCart.Controllers
             {
                 return RedirectToAction("Index", "Gallery");
             }
-            ViewData["product"] = product;
+            ViewBag.product = product;
+            ViewBag.uploadDir = "../" + UPLOAD_DIR;
             return View();
           
         }
         public Product getProduct(string productName)
         {                        
+            
+            
             Product product = dbContext.Products.Where(x =>
                x.ProductName == productName
            ).First();

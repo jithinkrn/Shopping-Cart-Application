@@ -34,11 +34,11 @@ namespace ShoppingCart
             // get a hash algorithm object
             HashAlgorithm sha = SHA256.Create();
 
-            string[] usernames = { "Tom_Cruise01", "Brad_Pitt01", "Brad_Pitt02", "Tom_Cruise02", "Al_Pacino01" };
-            string[] fullnames = { "Tom Cruise", "Brad Pitt", "Brad Pitt", "Tom Cruise", "Al Pacino" };
+            string[] usernames = { "Tom_Cruise01", "Brad_Pitt01", "Brad_Pitt02", "Tom_Cruise02", "Al_Pacino01"};
+            string[] fullnames = { "Tom Cruise", "Brad Pitt", "Brad Pitt", "Tom Cruise", "Al Pacino"};
             // as our system's default, new users have their 
             // passwords set as "secret"
-            string[] password = { "secret01", "secret02", "secret03", "secret04", "secret05" };
+            string[] password = { "secret01", "secret02", "secret03", "secret04", "secret05"};
 
             for (int i = 0; i < usernames.Length; i++)
             {                           
@@ -116,28 +116,52 @@ namespace ShoppingCart
             dbContext.SaveChanges();
 
         }
-            private void SeedProductRating()
+        private void SeedProductRating()
+        {
+
+            Customer customer = dbContext.Customers.FirstOrDefault(x =>
+                x.UserName == "Tom_Cruise01"
+            );
+            Product product = dbContext.Products.FirstOrDefault(x =>
+                x.ProductName == ".NET Charts"
+            );
+
+            if (customer != null && product != null)
             {
-
-                Customer customer = dbContext.Customers.FirstOrDefault(x =>
-                    x.UserName == "Tom_Cruise01"
-                );
-                Product product = dbContext.Products.FirstOrDefault(x =>
-                    x.ProductName == ".NET Charts"
-                );
-
-                if (customer != null && product != null)
+                ProductRating productRating1 = new ProductRating
                 {
-                    ProductRating productRating1 = new ProductRating
-                    {
-                        Rating = 1
-                    };
-                    customer.ProductRatings.Add(productRating1);
-                    product.ProductRatings.Add(productRating1);                               
-                }
-
-               dbContext.SaveChanges();
+                    Rating = 1
+                };
+                customer.ProductRatings.Add(productRating1);
+                product.ProductRatings.Add(productRating1);                               
             }
+
+            dbContext.SaveChanges();
+        }
+
+        //public void SeedPurchase()
+        //{
+        //    Customer customer = dbContext.Customers.FirstOrDefault(x =>
+        //           x.UserName == "Tom_Cruise01"
+        //       );
+        //    Product product = dbContext.Products.FirstOrDefault(x =>
+        //        x.ProductName == ".NET Charts"
+        //    );
+
+        //    if (customer != null && product != null)
+        //    {
+        //        Purchase purchase = new Purchase
+        //        {
+        //            PurchaseQty = 2,
+        //            PurchaseDate = new DateTime(2021, 11, 1, 9, 0, 0, DateTimeKind.Local)
+        //        };
+        //        customer.Purchases.Add(purchase);
+
+
+        //    }
+
+        //    dbContext.SaveChanges();
+        //}
 
     }
 }

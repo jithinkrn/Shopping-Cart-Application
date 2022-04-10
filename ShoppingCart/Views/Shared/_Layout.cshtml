@@ -3,26 +3,44 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - EFCore</title>
+    <title>@ViewData["Title"] - Shopping Platform</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
+
 </head>
 <body>
+    <header>
+        
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" >
+            <div class="container">
+                <a asp-area="" asp-controller="Gallery" asp-action="Index"><img src="/Logo/shopgood-logo.png"></a>
+                <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <span class="nav-link text-dark">Welcome, <b>@(ViewBag.CurrentUserName)!</b></span>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Gallery" asp-action="Index">Home</a>
+                        </li>
 
-    <div>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Purchases" asp-action="Index">My Purchases</a>
+                        </li>
 
-        <div class="topbar">
-
-            <div><p class="topcaption"> 20% Discount for two Items </p></div>
-
-            <div class="account">
-                <div>  My Account &#9660;</div>
-                <div> Create Account </div>
+                        <li class="nav-item">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><img src="/Logo/cart-icon-28356.png" height="25", width="25"></a>
+                        </li>
+                        <li class="nav-item">
+                            <div style="border-radius: 20px; background-color: #212121">
+                                <a style="color: white" class="nav-link" asp-area="" asp-controller="Cart" asp-action="Index">@(ViewBag.CartContents)</a>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
             </div>
-
-        </div>
-
-
+        </nav>
+    </header>
+    <div>
         <div>
 
             @RenderBody()
