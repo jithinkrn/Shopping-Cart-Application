@@ -5,69 +5,60 @@ using System.Linq;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace ShoppingCart.Controllers
 {
     public class GalleryController : Controller
     {
         private DBContext dbContext;
-        private const string UPLOAD_DIR = "Images";
 
         public GalleryController(DBContext dbContext)
         {
-            //this comment is from gab reyes + jithin's comment ascadsfbva
             this.dbContext = dbContext;
-            //TEst
         }
 
-        public IActionResult Index()
+        public IActionResult Index(string search, string sort)
+    
         {
-            //initial values on load
+            if (search == null)
+            {
+                search = "";
+            }
 
-            //check who is logged in first. if no log in, currentCustomer = guest user
-            Customer currentCustomer = dbContext.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
-            //initialize values of ViewBag.CartContents with CountNumberOfItems(currentCustomer), initialize ViewBag.CurrentUserName to currentCustomer
-            ViewBag.CurrentUserName = currentCustomer.FullName;
-            CartController JustForTheMethod = new CartController(dbContext);
-            ViewBag.CartContents = JustForTheMethod.CountNumberOfItems(currentCustomer);
+            List<Product> searchResult = dbContext.Products.Where(x => x.ProductName.Contains(search)).ToList();
+            ViewData["searchResult"] = searchResult;
+            ViewData["searchInput"] = search;
 
+            if (sort == "asc")
+            {
+                ViewData["searchResult"] = ((List<Product>)ViewData["searchResult"]).OrderBy(x => x.Price).ToList();
+            }
+            else if (sort == "desc")
+            {
+                ViewData["searchResult"] = ((List<Product>)ViewData["searchResult"]).OrderByDescending(x => x.Price).ToList();
+            }
 
             return View();
         }
 
-        public IActionResult Product(string prodSclicked)
+        public IActionResult Product(Guid productId)
         {
+            Product product = getProduct(productId);
 
-            prodSclicked = ".NET Charts";
-
-            if (prodSclicked == null)
-            {
-                return RedirectToAction("Index", "Gallery");
-            }
-
-            Product product = getProduct(prodSclicked);
-
-            if (product == null)                
-            {
-                return RedirectToAction("Index", "Gallery");
-            }
             ViewBag.product = product;
-            ViewBag.uploadDir = "../" + UPLOAD_DIR;
             return View();
-            //dd
           
         }
-        public Product getProduct(string productName)
-        {                        
-            
-            
+        public Product getProduct(Guid productId)
+        {
             Product product = dbContext.Products.Where(x =>
-               x.ProductName == productName
+               x.Id == productId
            ).First();
 
             return product;
 
         }
-        
+
     }
 }
