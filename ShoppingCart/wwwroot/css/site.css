@@ -27,6 +27,7 @@ for details on configuring this project to bundle and minify static web assets. 
     font-family: Bahnschrift;
 }
 
+
 a.navbar-brand {
     white-space: normal;
     text-align: center;
@@ -97,6 +98,30 @@ body {
     width: 100%;
     white-space: nowrap;
     line-height: 60px; /* Vertically center the text there */
+=======
+.my_img {
+    cursor: pointer;
+    width: 300px;
+
+}
+.rating_img {
+
+    padding-left: 10px;
+    cursor: pointer;
+    width: 33px;
+}
+.rating_col {
+
+    padding-left : 25px;
+    
+}
+
+.w-15 {
+    width: 15% !important;
+}
+
+.checked {
+    color: orange;
 }
 
 

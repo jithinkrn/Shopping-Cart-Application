@@ -11,6 +11,7 @@ namespace ShoppingCart.Controllers
     public class GalleryController : Controller
     {
         private DBContext dbContext;
+        private const string UPLOAD_DIR = "Images";
 
         public GalleryController(DBContext dbContext)
         {
@@ -50,12 +51,15 @@ namespace ShoppingCart.Controllers
             {
                 return RedirectToAction("Index", "Gallery");
             }
-            ViewData["product"] = product;
+            ViewBag.product = product;
+            ViewBag.uploadDir = "../" + UPLOAD_DIR;
             return View();
           
         }
         public Product getProduct(string productName)
         {                        
+            
+            
             Product product = dbContext.Products.Where(x =>
                x.ProductName == productName
            ).First();

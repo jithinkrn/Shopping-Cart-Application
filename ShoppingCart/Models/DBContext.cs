@@ -1,5 +1,9 @@
 ﻿using System;
 using Microsoft.EntityFrameworkCore;
+using System.Collections.Generic;
+using System.Linq;
+using System.Web;
+
 
 namespace ShoppingCart.Models 
 { 
@@ -12,6 +16,8 @@ namespace ShoppingCart.Models
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+
+          
         }
 
         // maps to our tables in the database
@@ -22,5 +28,6 @@ namespace ShoppingCart.Models
         public DbSet<Cart> Carts{ get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<ActivationCode> ActivationCodes { get; set; }
+
     }
 }
