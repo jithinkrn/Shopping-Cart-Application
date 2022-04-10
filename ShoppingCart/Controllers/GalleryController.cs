@@ -12,6 +12,7 @@ namespace ShoppingCart.Controllers
     public class GalleryController : Controller
     {
         private DBContext dbContext;
+        private const string UPLOAD_DIR = "Images";
 
         public GalleryController(DBContext dbContext)
         {
