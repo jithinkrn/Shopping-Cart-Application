@@ -54,7 +54,7 @@ namespace ShoppingCart.Controllers
             ViewBag.product = product;
             ViewBag.uploadDir = "../" + UPLOAD_DIR;
             return View();
-            //
+            //dd
           
         }
         public Product getProduct(string productName)
