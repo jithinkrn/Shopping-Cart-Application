@@ -1,9 +1,32 @@
 ﻿
 @{
-    ViewData["Title"] = "Home Page";
+    string customerName = ViewBag.CurrentCustomer.FullName;
+    ViewData["Title"] = "Shopping Cart: " + customerName;
+    List<Cart> itemsinCart = ViewBag.CustomerCart;
+    List<Product> productsinCart = ViewBag.ProductsInCart;
+    Dictionary<Product, int> countOfItems = ViewBag.CountOfItems;
+
 }
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <h1>Welcome @(customerName)!</h1>
+
+    <h3>Products</h3>
+    <table class="text-center">
+        @{
+            foreach (KeyValuePair<Product, int> pair in countOfItems)
+            {
+                <tr>
+                    <td>@pair.Value</td>
+                    <td>@pair.Key.ProductName</td>
+                    <td>@pair.Key.Price</td>
+                </tr>
+            }
+        }
+
+    </table>
+   
+    <form action="/Cart/Checkout" method="post">
+        <button type="submit">Checkout</button>
+    </form>
 </div>
