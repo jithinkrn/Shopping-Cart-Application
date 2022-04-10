@@ -4,25 +4,70 @@
     Dictionary<string, double>ListItemPrices = ViewBag.ItemPrice;
     List<Product> RandomList = ViewBag.ListOfRandomProds;
 }
+<style>
+    .receipt {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        margin: 0;
+        width: 80%;
+        border: 2px solid black;
+        padding: 20px;
+    }
+
+    .recos {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        align-content: center;
+        margin: 0;
+        width: 80%;
+        border: 2px solid black;
+        padding: 20px;
+    }
+
+</style>
 
 <div class="text-center">
     <h1 class="display-4">Thank you for your purchase!</h1>
 
-    <table>
-        @{ foreach (KeyValuePair<string, int> pair in ListItemQuantities)
-            {
-                <tr>
-                    <td>@pair.Key</td>
-                </tr>
+    <div class="receipt text-center">
+        <table>
+            @{ foreach (KeyValuePair<string, int> pair in ListItemQuantities)
+                {
+                    <tr>
+                        <td>@pair.Key</td>
+                        <td>@pair.Value</td>
+                    </tr>
+                }
             }
-        }
-
-    </table>
-
+        </table>
+    </div>
+    
+    <div class="recos text-center">
+        <table>
+            <tr>
+                @{ foreach (Product item in RandomList)
+                    {
+                        <td>@item.ProductName</td>
+                    }
+                }
+            </tr>
+        </table>
+    </div>
+    
     <table>
         <tr>
-            <td><button type="submit" formaction="Purchase/Index">Manage My Purchases</button></td>
-            <td><button type="submit" formaction="Gallery/Index">Continue Shopping</button></td>
+            <td>
+                <a class="text-dark" asp-area="" asp-controller="Purchases" asp-action="Index">My Purchases</a>
+            </td>
+            <td style="padding: 0px 20px">
+                |
+            </td>
+            <td>
+                <a class="text-dark" asp-area="" asp-controller="Gallery" asp-action="Index">Continue Shopping</a>
+            </td>
         </tr>
     </table>
 </div>

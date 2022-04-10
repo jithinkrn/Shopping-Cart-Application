@@ -10,7 +10,7 @@ namespace ShoppingCart.Controllers
 {
     public class CartController : Controller
     {
-        private DBContext db;
+        private readonly DBContext db;
 
         public CartController(DBContext dbContext)
         {
@@ -18,42 +18,51 @@ namespace ShoppingCart.Controllers
             this.db = dbContext;
 
         }
+
         public IActionResult Index()
         {
-
             //Seed an item for user
             Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
 
-            Cart newItem = new Cart
-            {
-                ProductId = db.Products.FirstOrDefault(x => x.ProductName == ".NET ML").Id,
-                CustomerId = currentCustomer.Id,
-                OrderQty = 1
-            };
+            Product newProd = FetchRandomProduct();
 
-            db.Carts.Add(newItem);
+            AddToCart(newProd.ProductName, currentCustomer);
 
             db.SaveChanges();
 
+
+            Dictionary<Product, int> countOfItems = new Dictionary<Product, int>();
+
+            List<Cart> customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+
+
+            foreach (Cart item in customerCart) {
+                Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                countOfItems.Add(newItem, item.OrderQty);
+            };
+
             ViewBag.CurrentCustomer = currentCustomer;
-            ViewBag.CustomerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
-            ViewBag.NewItem = db.Products.FirstOrDefault(x => x.Id == newItem.ProductId);
+            ViewBag.CustomerCart = customerCart;
+            ViewBag.CountOfItems = countOfItems;
+
+            ViewBag.CartContents = CountNumberOfItems(currentCustomer);
+            ViewBag.CurrentUserName = currentCustomer.FullName;
 
             return View();
         }
 
         //AddToCart (will be used in the gallery, the cart page and the results page)
-        public void AddToCart(string productName) {
+        public void AddToCart(string productName, Customer currentUser) {
             //check for the current product in the database
             Product newProd = db.Products.FirstOrDefault(x => x.ProductName == productName);
 
             //check for the current customer who is using
-            Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+            Customer currentCustomer = currentUser;
 
             Cart itemInCart = db.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
             
             //query in the database whether the item already exists in the shopping cart of the customer
-            if (itemInCart != null)
+            if (itemInCart == null)
             {
                 //if not, create a new entry
                 db.Carts.Add(new Cart
@@ -72,38 +81,44 @@ namespace ShoppingCart.Controllers
         }
 
         //will be used in the cart page
-        public void RemoveFromCart(string productName)
+        public void SubtractFromCart(string productName, Customer currentUser)
         {
             //check for the current product in the database
             Product newProd = db.Products.FirstOrDefault(x => x.ProductName == productName);
 
             //check for the current customer who is using
-            Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+            Customer currentCustomer = currentUser;
 
             //query for the item in the shoppingcarts db
             Cart itemInCart = db.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
 
-            //query in the database whether there is only one more of the item
-            if (itemInCart.OrderQty == 1)
+
+            if (itemInCart != null)
             {
-                //if yes, remove
-                db.Carts.Remove(itemInCart);
-            }
-            else
-            {
-                //if not, subtract 1 to the product quantity
-                itemInCart.OrderQty--;
+                //query in the database whether there is only one more of the item
+                if (itemInCart.OrderQty == 1)
+                {
+                    //if yes, remove
+                    db.Carts.Remove(itemInCart);
+                }
+                else
+                {
+                    //if not, subtract 1 to the product quantity
+                    itemInCart.OrderQty--;
+                }
             }
 
             db.SaveChanges();
         }
-
         public IActionResult Checkout()
         {
             //validate session
+            //if not yet logged in, save all items? guestCart option?
 
-            //get currentcustomer
+            //get currentcustomer (will involve session)
             Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+
+            //call TransferFromGuestToUserCart(guestUser, currentCustomer); when logging in
 
             //get all items in the cart under the customer
             List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
@@ -114,11 +129,10 @@ namespace ShoppingCart.Controllers
             Dictionary<string, double> itemPrice = new Dictionary<string, double>();
 
             //take the price of the entire list
-            ViewBag.TotalPrice = CalculateTotalPrice();
+            ViewBag.TotalPrice = CalculateTotalPrice(currentCustomer);
 
             //transform all items into purchases
             foreach (Cart item in itemsInCart) {
-                itemQty.Add(item.ProductId.ToString(), item.OrderQty);
 
                 Purchase onHand = db.Purchases.FirstOrDefault(x => x.CustomerId == currentCustomer.Id && x.ProductId == item.ProductId);
 
@@ -158,33 +172,34 @@ namespace ShoppingCart.Controllers
 
                 }
 
-                double currentPrice = CalculateTotalPrice();
-
                 //remove from the ShoppingCarts database
                 Cart findTheItem = db.Carts.FirstOrDefault(x => x.Id == item.Id);
+                Product findProduct = db.Products.FirstOrDefault(x => x.Id == findTheItem.ProductId);
+                itemQty.Add(findProduct.ProductName, findTheItem.OrderQty);
+                itemPrice.Add(findProduct.ProductName, findProduct.Price);
+
                 db.Carts.Remove(findTheItem);
 
                 db.SaveChanges();
             }
 
 
-            //empty the cart
             //send the details of the purchases to ViewBag (for View purposes)
             //add product details to the dictionary
             ViewBag.ItemQty = itemQty;
             ViewBag.ItemPrice = itemPrice;
-            ViewBag.RecoItems = RecommendProducts();
+            ViewBag.ListOfRandomProds = RecommendProducts();
             ViewBag.CurrentCustomer = currentCustomer;
+            //all IActionResult Methods will return this
+            ViewBag.CartContents = CountNumberOfItems(currentCustomer);
+            ViewBag.CurrentUserName = currentCustomer.FullName;
             //send customer details to display
 
             return View();
         }
 
-        public double CalculateTotalPrice() {
+        public double CalculateTotalPrice(Customer currentCustomer) {
             double finalPrice = 0.0;
-
-            //get current customer
-            Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
 
             //get all items in the cart under the customer
             List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
@@ -209,14 +224,11 @@ namespace ShoppingCart.Controllers
         }
 
         //count number of items
-        public int CountNumberOfItems() {
+        public int CountNumberOfItems(Customer currCustomer) {
             int finalCount = 0;
 
-            //find current customer
-            Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
-
             //get all items in the cart under the customer
-            List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+            List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currCustomer.Id).ToList();
 
             //take the quantity of each item
             foreach (Cart item in itemsInCart)
@@ -258,6 +270,28 @@ namespace ShoppingCart.Controllers
             Product randomProduct = listOfProducts[rnd.Next(listOfProducts.Count())];
 
             return randomProduct;
+        }
+
+        public void TransferFromGuestToUserCart(Customer guest, Customer user) {
+
+            Customer currentCustomer = user;
+
+            List<Cart> guestCart = db.Carts.Where(x => x.CustomerId == guest.Id).ToList();
+            List<Cart> userCart = db.Carts.Where(x => x.CustomerId == user.Id).ToList();
+
+            foreach (Cart item in guestCart) {
+                Product newProd = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+
+                for (int i = item.OrderQty; i < 0; i++) {
+                    AddToCart(newProd.ProductName, user);
+                }
+
+                db.SaveChanges();
+
+                db.Carts.Remove(item);
+
+                db.SaveChanges();
+            }
         }
     }
 }
