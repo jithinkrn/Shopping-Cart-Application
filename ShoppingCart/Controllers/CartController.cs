@@ -138,7 +138,7 @@ namespace ShoppingCart.Controllers
 
                 for (int i = item.OrderQty; i < 1; i--) {
                     //add to purchases list
-                    if (onHand != null)
+                    if (onHand == null)
                     {
                         //if it is not in the purchases db, create new purchase, add activation code and set quantity to 1
                         onHand = new Purchase
