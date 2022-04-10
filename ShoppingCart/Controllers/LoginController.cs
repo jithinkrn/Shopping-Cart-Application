@@ -27,7 +27,7 @@ namespace ShoppingCart.Controllers
             {//session Id is converted to string as our Session controller has PK in string type//
 
                 //  string sessionId = System.Guid.NewGuid().ToString();//
-                string sessionId = (Request.Cookies["sessionId"]);
+                Guid sessionId = Guid.Parse(Request.Cookies["sessionId"]);
                 Session session = dbContext.Sessions.FirstOrDefault(x =>
                     x.Id == sessionId
                 );
