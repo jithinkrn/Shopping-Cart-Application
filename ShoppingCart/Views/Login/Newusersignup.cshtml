@@ -1,0 +1,53 @@
+﻿@{
+    ViewData["Title"] = "New User";
+ }
+
+<h2>Member Registration</h2>
+
+<form action="/Login/Newuser" method="post">
+<div style="text-align:center">
+    <div class="my_tbl">
+        <div class="my_row">
+            <div class="my_cell">
+
+                Fullname
+            </div>
+            <div class="my_cell">
+                <input name="fullname" />
+            </div>
+        </div>
+
+        <div class="my_row">
+            <div class="my_cell">
+
+                Username
+            </div>
+            <div class="my_cell">
+                <input name="username" />
+            </div>
+        </div>
+
+
+        <div class="my_row">
+            <div class="my_cell">
+
+                Password
+            </div>
+            <div class="my_cell">
+                <input name="password" type="password" />
+            </div>
+        </div>
+        <div class="my_row">
+            <div class="my_cell"></div>
+            <br />
+            <div class="my_cell" style="text-align: center">
+                <input type="submit" value="Register Member " class="btn btn-primary" />
+                <br />
+                <br />
+              
+        
+
+            </div>
+        </div>
+    </div>
+    </form>
