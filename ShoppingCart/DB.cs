@@ -52,8 +52,9 @@ namespace ShoppingCart
                 {
                     UserName = usernames[i],
                     FullName = fullnames[i],
-                    PassHash = hash
-                });
+                    PassHash = hash,
+                    RewardPoint = 0
+                }); ;
 
                 // commit our changes in the database
                 dbContext.SaveChanges();
