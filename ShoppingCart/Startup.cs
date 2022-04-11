@@ -30,6 +30,7 @@ namespace ShoppingCart
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllersWithViews();
+            services.AddSession();
 
             // add our database context into DI container
             services.AddDbContext<DBContext>(opt =>
@@ -57,6 +58,7 @@ namespace ShoppingCart
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseSession();
 
             app.UseEndpoints(endpoints => {
                 endpoints.MapControllerRoute(

@@ -26,6 +26,7 @@ namespace ShoppingCart
             SeedProduct();
             SeedProductRating();
             SeedPurchase();
+
         }
 
       
@@ -52,8 +53,9 @@ namespace ShoppingCart
                 {
                     UserName = usernames[i],
                     FullName = fullnames[i],
-                    PassHash = hash
-                });
+                    PassHash = hash,
+                    RewardPoint = 0
+                }); ;
 
                 // commit our changes in the database
                 dbContext.SaveChanges();
@@ -142,19 +144,21 @@ namespace ShoppingCart
         public void SeedPurchase()
         {
             Customer customer = dbContext.Customers.FirstOrDefault(x =>
+
                         x.UserName == "Tom_Cruise01"
                     );
+
             Product product = dbContext.Products.FirstOrDefault(x =>
                 x.ProductName == ".NET Charts"
             );
 
             if (customer != null && product != null)
             {
+
                 //dbContext.Add(new ActivationCode
                 //{
                   
-                //});
-              
+                //});              
 
                 Purchase purchase = new Purchase
                 {
@@ -163,11 +167,9 @@ namespace ShoppingCart
                     PurchaseDate = new DateTime(2021, 11, 1, 9, 0, 0, DateTimeKind.Local)
                 };
                 customer.Purchases.Add(purchase);
+                product.Purchases.Add(purchase);
 
-              
-               
             }
-
             dbContext.SaveChanges();
         }
 

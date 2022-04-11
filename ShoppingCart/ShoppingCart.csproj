@@ -5,6 +5,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Views\Newuser\**" />
+    <Content Remove="Views\Newuser\**" />
+    <EmbeddedResource Remove="Views\Newuser\**" />
+    <None Remove="Views\Newuser\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\Logo\logoipsum-logo-46.png" />
   </ItemGroup>
 
