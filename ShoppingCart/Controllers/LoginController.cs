@@ -14,7 +14,7 @@ namespace ShoppingCart.Controllers
     public class LoginController : Controller
     {
         private DBContext dbContext;
-
+      
         public LoginController(DBContext dbContext)
         {
 
@@ -25,7 +25,8 @@ namespace ShoppingCart.Controllers
         {
             if (Request.Cookies["SessionId"] != null)
             {
-                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
+                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);             
+
                 Session session = dbContext.Sessions.FirstOrDefault(x =>
                     x.Id == sessionId
                 );
@@ -61,15 +62,16 @@ namespace ShoppingCart.Controllers
 
             if (customer == null)
             {
-                TempData["Message"] = "Click Login as Guest";
+                TempData["Message"] = "Username/Password Incorrect";
+
                 return RedirectToAction("Index", "Login");
             }
 
-            // create a new session and tag to user
+            // create a new session and tag to customer
             Session session = new Session()
             {
                 Customer = customer
-            };
+            }
 
             dbContext.Sessions.Add(session);
             dbContext.SaveChanges();
@@ -77,6 +79,7 @@ namespace ShoppingCart.Controllers
             // ask browser to save and send back these cookies next time
             Response.Cookies.Append("SessionId", session.Id.ToString());
             Response.Cookies.Append("UserName", customer.UserName);
+
 
             //coming from checkout stuff
 
@@ -95,7 +98,7 @@ namespace ShoppingCart.Controllers
         {
             return View();
         }
-
+    
         public IActionResult Newuser(IFormCollection form)
         {
             string fullname = form["fullname"];
@@ -132,9 +135,6 @@ namespace ShoppingCart.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
-
-
-
             /* dbContext.Add(new Customer
              {
                  UserName = username,
@@ -144,6 +144,7 @@ namespace ShoppingCart.Controllers
 
              dbContext.SaveChanges();
              return RedirectToAction("Index", "Login");*/
+
         }
 
     }
