@@ -28,6 +28,7 @@ namespace ShoppingCart.Models
         public DbSet<Cart> Carts{ get; set; }
         public DbSet<Session> Sessions { get; set; }
         public DbSet<ActivationCode> ActivationCodes { get; set; }
+        public DbSet<GuestCart> GuestCarts { get; set; }
 
 
     }

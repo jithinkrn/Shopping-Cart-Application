@@ -21,32 +21,56 @@ namespace ShoppingCart.Controllers
 
         public IActionResult Index()
         {
-            //Seed an item for user
-            Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
 
-            Product newProd = FetchRandomProduct();
-
-            AddToCart(newProd.ProductName, currentCustomer);
-
-            db.SaveChanges();
-
-
+            Customer currentCustomer = CheckLoggedIn();
+            string currentSession = "";
             Dictionary<Product, int> countOfItems = new Dictionary<Product, int>();
+            List<Cart> customerCart = new List<Cart>();
+            List<GuestCart> guestCart = new List<GuestCart>();
+            //Seed an item for user
+            if (currentCustomer != null)
+            {
+                Product newProd = FetchRandomProduct();
 
-            List<Cart> customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+                AddToCart(newProd.ProductName, currentCustomer);
 
+                db.SaveChanges();
 
-            foreach (Cart item in customerCart) {
-                Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
-                countOfItems.Add(newItem, item.OrderQty);
-            };
+                customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+
+                foreach (Cart item in customerCart)
+                {
+                    Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                    countOfItems.Add(newItem, item.OrderQty);
+                };
+
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+            }
+            else {
+                Product newProd = FetchRandomProduct();
+
+                AddToCart(newProd.ProductName);
+
+                db.SaveChanges();
+
+                guestCart = db.GuestCarts.ToList();
+
+                foreach (GuestCart item in guestCart)
+                {
+                    Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                    countOfItems.Add(newItem, item.OrderQty);
+                };
+                ViewBag.CurrentUserName = "Guest User";
+            }
+
+            //initializing
 
             ViewBag.CurrentCustomer = currentCustomer;
-            ViewBag.CustomerCart = customerCart;
             ViewBag.CountOfItems = countOfItems;
+            //ViewBag.TotalPrice = CalculateTotalPrice(currentCustomer);
+            ViewBag.CartContents = CountNumberOfItems();
 
-            ViewBag.CartContents = CountNumberOfItems(currentCustomer);
-            ViewBag.CurrentUserName = currentCustomer.FullName;
+            ViewBag.CurrentSession = currentSession;
 
             return View();
         }
@@ -80,6 +104,32 @@ namespace ShoppingCart.Controllers
             db.SaveChanges();
         }
 
+        public void AddToCart(string productName)
+        {
+            //check for the current product in the database
+            Product newProd = db.Products.FirstOrDefault(x => x.ProductName == productName);
+
+            GuestCart itemInCart = db.GuestCarts.FirstOrDefault(x => x.ProductId == newProd.Id);
+
+            //query in the database whether the item already exists in the shopping cart of the customer
+            if (itemInCart == null)
+            {
+                //if not, create a new entry
+                db.GuestCarts.Add(new GuestCart
+                {
+                    ProductId = newProd.Id,
+                    OrderQty = 1
+                });
+            }
+            else
+            {
+                //if found, add 1 to the product quantity
+                itemInCart.OrderQty++;
+            }
+
+            db.SaveChanges();
+        }
+
         //will be used in the cart page
         public void SubtractFromCart(string productName, Customer currentUser)
         {
@@ -91,7 +141,6 @@ namespace ShoppingCart.Controllers
 
             //query for the item in the shoppingcarts db
             Cart itemInCart = db.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
-
 
             if (itemInCart != null)
             {
@@ -114,108 +163,151 @@ namespace ShoppingCart.Controllers
         {
             //validate session
             //if not yet logged in, save all items? guestCart option?
+            //do we store session as guest user?
+            Customer currentCustomer = CheckLoggedIn();
 
-            //get currentcustomer (will involve session)
-            Customer currentCustomer = db.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+            if (currentCustomer != null)
+            {
+                //call TransferFromGuestToUserCart(currentCustomer); when logging in
 
-            //call TransferFromGuestToUserCart(guestUser, currentCustomer); when logging in
+                //get all items in the cart under the customer
+                List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
 
-            //get all items in the cart under the customer
-            List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+                //get all current purchases of customer
+                //for display later in the checkout
+                Dictionary<Product, int> itemQty = new Dictionary<Product, int>();
 
-            //get all current purchases of customer
-            //for display later in the checkout
-            Dictionary<string, int> itemQty = new Dictionary<string, int>();
-            Dictionary<string, double> itemPrice = new Dictionary<string, double>();
+                //take the price of the entire list
+                //double totalPrice = CalculateTotalPrice(currentCustomer);
 
-            //take the price of the entire list
-            ViewBag.TotalPrice = CalculateTotalPrice(currentCustomer);
+                //transform all items into purchases
+                foreach (Cart item in itemsInCart)
+                {
 
-            //transform all items into purchases
-            foreach (Cart item in itemsInCart) {
+                    Purchase onHand = db.Purchases.FirstOrDefault(x => x.CustomerId == currentCustomer.Id && x.ProductId == item.ProductId);
 
-                Purchase onHand = db.Purchases.FirstOrDefault(x => x.CustomerId == currentCustomer.Id && x.ProductId == item.ProductId);
-
-                for (int i = item.OrderQty; i < 1; i--) {
-                    //add to purchases list
-                    if (onHand == null)
+                    for (int i = item.OrderQty; i < 1; i--)
                     {
-                        //if it is not in the purchases db, create new purchase, add activation code and set quantity to 1
-                        onHand = new Purchase
+                        //add to purchases list
+                        if (onHand == null)
                         {
-                            ProductId = item.ProductId,
-                            CustomerId = currentCustomer.Id,
-                            PurchaseDate = DateTime.Now,
-                            PurchaseQty = 1
+                            //if it is not in the purchases db, create new purchase, add activation code and set quantity to 1
+                            onHand = new Purchase
+                            {
+                                ProductId = item.ProductId,
+                                CustomerId = currentCustomer.Id,
+                                PurchaseDate = DateTime.Now,
+                                PurchaseQty = 1
+                            };
+
+                            db.Purchases.Add(onHand);
+                        }
+                        else
+                        {
+                            //if it is, add to purchase qty
+                            onHand.PurchaseQty++;
+                        }
+
+                        db.SaveChanges();
+                        //generate activation code
+                        ActivationCode newCode = new ActivationCode
+                        {
+                            //put the attributes
+                            ProductID = item.ProductId,
+                            PurchaseID = onHand.Id
                         };
 
-                        db.Purchases.Add(onHand);
-                    }
-                    else
-                    {
-                        //if it is, add to purchase qty
-                        onHand.PurchaseQty++;
+                        db.ActivationCodes.Add(newCode);
+
+                        db.SaveChanges();
+
                     }
 
-                    db.SaveChanges();
-                    //generate activation code
-                    ActivationCode newCode = new ActivationCode
-                    {
-                        //put the attributes
-                        ProductID = item.ProductId,
-                        PurchaseID = onHand.Id
-                    };
+                    //remove from the ShoppingCarts database
+                    Cart findTheItem = db.Carts.FirstOrDefault(x => x.Id == item.Id);
+                    Product findProduct = db.Products.FirstOrDefault(x => x.Id == findTheItem.ProductId);
+                    itemQty.Add(findProduct, findTheItem.OrderQty);
 
-                    db.ActivationCodes.Add(newCode);
+                    db.Carts.Remove(findTheItem);
 
                     db.SaveChanges();
-
                 }
 
-                //remove from the ShoppingCarts database
-                Cart findTheItem = db.Carts.FirstOrDefault(x => x.Id == item.Id);
-                Product findProduct = db.Products.FirstOrDefault(x => x.Id == findTheItem.ProductId);
-                itemQty.Add(findProduct.ProductName, findTheItem.OrderQty);
-                itemPrice.Add(findProduct.ProductName, findProduct.Price);
 
-                db.Carts.Remove(findTheItem);
 
+                //int additionalPoints = (int)Math.Floor(totalPrice / 10);
+                //currentCustomer.RewardPoint += additionalPoints;
                 db.SaveChanges();
+
+
+                //send the details of the purchases to ViewBag (for View purposes)
+                //add product details to the dictionary
+                ViewBag.CurrentCustomer = currentCustomer;
+                ViewBag.ItemQty = itemQty;
+                ViewBag.ListOfRandomProds = RecommendProducts();
+                //ViewBag.TotalPrice = totalPrice;
+                ViewBag.Reward = currentCustomer.RewardPoint;
+                //ViewBag.AdditionalPoint = additionalPoints;
+                //all IActionResult Methods will return this
+                ViewBag.CartContents = CountNumberOfItems();
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+                //send customer details to display
+
+                return View();
+            }
+            else {
+                //if not logged in
+                return RedirectToAction("Index", "Login"); ;
             }
 
 
-            //send the details of the purchases to ViewBag (for View purposes)
-            //add product details to the dictionary
-            ViewBag.ItemQty = itemQty;
-            ViewBag.ItemPrice = itemPrice;
-            ViewBag.ListOfRandomProds = RecommendProducts();
-            ViewBag.CurrentCustomer = currentCustomer;
-            //all IActionResult Methods will return this
-            ViewBag.CartContents = CountNumberOfItems(currentCustomer);
-            ViewBag.CurrentUserName = currentCustomer.FullName;
-            //send customer details to display
-
-            return View();
         }
 
-        public double CalculateTotalPrice(Customer currentCustomer) {
+        public double CalculateTotalPrice() {
             double finalPrice = 0.0;
 
-            //get all items in the cart under the customer
-            List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+            Customer currentCustomer = CheckLoggedIn();
 
-            //take the price of each item
-            foreach (Cart item in itemsInCart) {
-                Product takePrice = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
-                //get the product price and multiply the quantity
-                double priceToAdd = takePrice.Price * item.OrderQty;
+            if (currentCustomer != null)
+            {
+                //get all items in the cart under the customer
+                List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
 
-                /*
-                for any discount logic concerning the price, put them here
-                */
+                //take the price of each item
+                foreach (Cart item in itemsInCart)
+                {
+                    Product takePrice = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                    //get the product price and multiply the quantity
+                    double priceToAdd = takePrice.Price * item.OrderQty;
 
-                finalPrice += priceToAdd;
+                    /*
+                    for any discount logic concerning the price, put them here
+                    */
+
+                    finalPrice += priceToAdd;
+                }
             }
+            else {
+                //get all items in the cart under the customer
+                List<GuestCart> itemsInCart = db.GuestCarts.ToList();
+
+                //take the price of each item
+                foreach (GuestCart item in itemsInCart)
+                {
+                    Product takePrice = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                    //get the product price and multiply the quantity
+                    double priceToAdd = takePrice.Price * item.OrderQty;
+
+                    /*
+                    for any discount logic concerning the price, put them here
+                    */
+
+                    finalPrice += priceToAdd;
+                }
+
+            }
+            
+            
             /*
             for any other discount logic concerning the price, put them here
             */
@@ -223,19 +315,36 @@ namespace ShoppingCart.Controllers
             return finalPrice;
         }
 
+
         //count number of items
-        public int CountNumberOfItems(Customer currCustomer) {
+        public int CountNumberOfItems() {
             int finalCount = 0;
 
-            //get all items in the cart under the customer
-            List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currCustomer.Id).ToList();
+            Customer currentCustomer = CheckLoggedIn();
 
-            //take the quantity of each item
-            foreach (Cart item in itemsInCart)
+            if (currentCustomer != null)
             {
-                finalCount += item.OrderQty;
+                //get all items in the cart under the customer
+                List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+
+                //take the quantity of each item
+                foreach (Cart item in itemsInCart)
+                {
+                    finalCount += item.OrderQty;
+                }
             }
-            
+            else
+            {
+                //get all items in the cart under the customer
+                List<GuestCart> itemsInCart = db.GuestCarts.ToList();
+
+                //take the quantity of each item
+                foreach (GuestCart item in itemsInCart)
+                {
+                    finalCount += item.OrderQty;
+                }
+            }
+
             return finalCount;
         }
 
@@ -272,14 +381,14 @@ namespace ShoppingCart.Controllers
             return randomProduct;
         }
 
-        public void TransferFromGuestToUserCart(Customer guest, Customer user) {
+        public void TransferFromGuestToUserCart(Customer user) {
 
             Customer currentCustomer = user;
 
-            List<Cart> guestCart = db.Carts.Where(x => x.CustomerId == guest.Id).ToList();
+            List<GuestCart> guestCart = db.GuestCarts.ToList();
             List<Cart> userCart = db.Carts.Where(x => x.CustomerId == user.Id).ToList();
 
-            foreach (Cart item in guestCart) {
+            foreach (GuestCart item in guestCart) {
                 Product newProd = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
 
                 for (int i = item.OrderQty; i < 0; i++) {
@@ -288,10 +397,30 @@ namespace ShoppingCart.Controllers
 
                 db.SaveChanges();
 
-                db.Carts.Remove(item);
+                db.GuestCarts.Remove(item);
 
                 db.SaveChanges();
             }
+        }
+
+        public Customer CheckLoggedIn() {
+            Customer currentCustomer = new Customer();
+            
+            if (Request.Cookies["SessionId"] != null)
+            {
+                //if logged in
+                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
+                Session session = db.Sessions.FirstOrDefault(x => x.Id == sessionId);
+                currentCustomer = db.Customers.FirstOrDefault(x => x == session.Customer);
+                return currentCustomer;
+            }
+            else
+            {
+                currentCustomer = null;
+                //if not logged in
+                return currentCustomer;
+            }
+
         }
     }
 }
