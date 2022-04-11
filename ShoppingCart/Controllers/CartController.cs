@@ -24,7 +24,7 @@ namespace ShoppingCart.Controllers
         {
 
             Customer currentCustomer = CheckLoggedIn();
-            string currentSession = "";
+
             Dictionary<Product, int> countOfItems = new Dictionary<Product, int>();
             List<Cart> customerCart = new List<Cart>();
             List<GuestCart> guestCart = new List<GuestCart>();
@@ -68,10 +68,8 @@ namespace ShoppingCart.Controllers
 
             ViewBag.CurrentCustomer = currentCustomer;
             ViewBag.CountOfItems = countOfItems;
-            //ViewBag.TotalPrice = CalculateTotalPrice(currentCustomer);
+            ViewBag.TotalPrice = CalculateTotalPrice();
             ViewBag.CartContents = CountNumberOfItems();
-
-            ViewBag.CurrentSession = currentSession;
 
             return View();
         }
@@ -410,9 +408,9 @@ namespace ShoppingCart.Controllers
             
             if (Request.Cookies["SessionId"] != null)
             {
-                //if logged in
-                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
 
+                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
+                Debug.WriteLine(sessionId.ToString());
                 Session session = db.Sessions.FirstOrDefault(x => x.Id == sessionId);
 
                 if (session == null)
@@ -420,6 +418,7 @@ namespace ShoppingCart.Controllers
                     currentCustomer = null;
                     return currentCustomer;
                 }
+
                 currentCustomer = db.Customers.FirstOrDefault(x => x == session.Customer);
 
             }
