@@ -178,7 +178,7 @@ namespace ShoppingCart.Controllers
                 Dictionary<Product, int> itemQty = new Dictionary<Product, int>();
 
                 //take the price of the entire list
-                //double totalPrice = CalculateTotalPrice(currentCustomer);
+                double totalPrice = CalculateTotalPrice();
 
                 //transform all items into purchases
                 foreach (Cart item in itemsInCart)
@@ -235,8 +235,8 @@ namespace ShoppingCart.Controllers
 
 
 
-                //int additionalPoints = (int)Math.Floor(totalPrice / 10);
-                //currentCustomer.RewardPoint += additionalPoints;
+                int additionalPoints = (int)Math.Floor(totalPrice / 10);
+                currentCustomer.RewardPoint += additionalPoints;
                 db.SaveChanges();
 
 
@@ -247,7 +247,7 @@ namespace ShoppingCart.Controllers
                 ViewBag.ListOfRandomProds = RecommendProducts();
                 //ViewBag.TotalPrice = totalPrice;
                 ViewBag.Reward = currentCustomer.RewardPoint;
-                //ViewBag.AdditionalPoint = additionalPoints;
+                ViewBag.AdditionalPoint = additionalPoints;
                 //all IActionResult Methods will return this
                 ViewBag.CartContents = CountNumberOfItems();
                 ViewBag.CurrentUserName = currentCustomer.FullName;
@@ -256,8 +256,9 @@ namespace ShoppingCart.Controllers
                 return View();
             }
             else {
+                ViewBag.ComingFromCheckout = true;
                 //if not logged in
-                return RedirectToAction("Index", "Login"); ;
+                return RedirectToAction("Index", "Login");
             }
 
 

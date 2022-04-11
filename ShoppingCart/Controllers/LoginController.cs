@@ -24,10 +24,8 @@ namespace ShoppingCart.Controllers
         public IActionResult Index()
         {
             if (Request.Cookies["SessionId"] != null)
-            {//session Id is converted to string as our Session controller has PK in string type//
-
-                //  string sessionId = System.Guid.NewGuid().ToString();//
-                Guid sessionId = Guid.Parse(Request.Cookies["sessionId"]);
+            {
+                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
                 Session session = dbContext.Sessions.FirstOrDefault(x =>
                     x.Id == sessionId
                 );
@@ -50,6 +48,7 @@ namespace ShoppingCart.Controllers
         {
             string username = form["username"];
             string password = form["password"];
+            string checkout = form["checkout"];
 
             HashAlgorithm sha = SHA256.Create();
             byte[] hash = sha.ComputeHash(
@@ -62,6 +61,7 @@ namespace ShoppingCart.Controllers
 
             if (customer == null)
             {
+                TempData["Message"] = "Click Login as Guest";
                 return RedirectToAction("Index", "Login");
             }
 
@@ -70,15 +70,82 @@ namespace ShoppingCart.Controllers
             {
                 Customer = customer
             };
+
             dbContext.Sessions.Add(session);
             dbContext.SaveChanges();
 
             // ask browser to save and send back these cookies next time
             Response.Cookies.Append("SessionId", session.Id.ToString());
-            Response.Cookies.Append("Username", customer.UserName);
+            Response.Cookies.Append("UserName", customer.UserName);
+
+            //coming from checkout stuff
 
             return RedirectToAction("Index", "Gallery");
         }
-    }
-}
 
+        public IActionResult GuestLogin(IFormCollection form)
+        {
+            return RedirectToAction("Index", "Gallery");
+        }
+
+        /*Newuser Sign up*/
+
+
+        public IActionResult Newusersignup(IFormCollection form)
+        {
+            return View();
+        }
+
+        public IActionResult Newuser(IFormCollection form)
+        {
+            string fullname = form["fullname"];
+            string username = form["username"];
+            string password = form["password"];
+
+            HashAlgorithm sha = SHA256.Create();
+            byte[] hash = sha.ComputeHash(
+                Encoding.UTF8.GetBytes(username + password));
+
+            Customer customer = dbContext.Customers.FirstOrDefault(x =>
+                x.UserName == username &&
+                x.PassHash == hash
+            );
+
+            if (customer == null)
+            {
+                dbContext.Add(new Customer
+                {
+                    UserName = username,
+                    FullName = fullname,
+                    PassHash = hash
+                });
+
+
+                dbContext.SaveChanges();
+                TempData["Message"] = "Registration Successful! Please Login as Member ";
+                return RedirectToAction("Index", "Login");
+
+            }
+            else
+            {
+                TempData["Message"] = "User Already Exists";
+                return RedirectToAction("Index", "Login");
+            }
+
+
+
+
+            /* dbContext.Add(new Customer
+             {
+                 UserName = username,
+                 FullName = fullname,
+                 PassHash = hash
+             }); 
+
+             dbContext.SaveChanges();
+             return RedirectToAction("Index", "Login");*/
+        }
+
+    }
+
+}
