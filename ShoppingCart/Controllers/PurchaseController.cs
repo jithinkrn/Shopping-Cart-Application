@@ -21,6 +21,29 @@ namespace ShoppingCart.Controllers
         [Route("Purchases")]
         public IActionResult Index()
         {
+            // get the customId via session
+            Customer currentCustomer = dbContext.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+
+            // get purchase list via customid
+            List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
+
+           
+            Dictionary<Guid, Product> maps = new Dictionary<Guid, Product>();
+            Dictionary<Guid, ActivationCode[]> activeCodeMap = new Dictionary<Guid, ActivationCode[]>();
+
+            purchases.ForEach(purchase => {
+                Product find = dbContext.Products.Where(item => item.Id.Equals(purchase.ProductId)).ToList().FirstOrDefault();
+
+                ActivationCode[] codes = dbContext.ActivationCodes.Where(item => item.PurchaseID.Equals(purchase.Id)).ToArray();
+                maps.Add(purchase.Id, find);
+                activeCodeMap.Add(purchase.Id, codes);
+            });
+
+
+            // inject list to the view
+            ViewData["purchaseList"] = purchases;
+            ViewData["productMaps"] = maps;
+            ViewData["activeCodeMap"] = activeCodeMap;
             return View();
         }
 
