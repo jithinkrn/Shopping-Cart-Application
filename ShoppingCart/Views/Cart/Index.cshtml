@@ -1,12 +1,11 @@
 ﻿
 @{
     ViewData["Title"] = "View Cart";
-    string customerName = ViewBag.CurrentCustomer.FullName;
+    string customerName = ViewBag.CurrentUserName;
+
     ViewData["Title"] = "Shopping Cart: " + customerName;
-    List<Cart> itemsinCart = ViewBag.CustomerCart;
     List<Product> productsinCart = ViewBag.ProductsInCart;
     Dictionary<Product, int> countOfItems = ViewBag.CountOfItems;
-
 }
 
 <div class="text-center">

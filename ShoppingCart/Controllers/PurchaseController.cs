@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace ShoppingCart.Controllers
 {
@@ -18,9 +20,32 @@ namespace ShoppingCart.Controllers
             this.dbContext = dbContext;
 
         }
-        [Route("Purchases")]
+        
         public IActionResult Index()
         {
+            // get the customId via session
+            Customer currentCustomer = dbContext.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+
+            // get purchase list via customid
+            List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
+
+           
+            Dictionary<Guid, Product> maps = new Dictionary<Guid, Product>();
+            Dictionary<Guid, ActivationCode[]> activeCodeMap = new Dictionary<Guid, ActivationCode[]>();
+
+            purchases.ForEach(purchase => {
+                Product find = dbContext.Products.Where(item => item.Id.Equals(purchase.ProductId)).ToList().FirstOrDefault();
+
+                ActivationCode[] codes = dbContext.ActivationCodes.Where(item => item.PurchaseID.Equals(purchase.Id)).ToArray();
+                maps.Add(purchase.Id, find);
+                activeCodeMap.Add(purchase.Id, codes);
+            });
+
+
+            // inject list to the view
+            ViewData["purchaseList"] = purchases;
+            ViewData["productMaps"] = maps;
+            ViewData["activeCodeMap"] = activeCodeMap;
             return View();
         }
 
@@ -51,8 +76,17 @@ namespace ShoppingCart.Controllers
                 x.ProductName == productName
             ).First();
 
-            return product;
-                    
+            return product;                    
         }
+        public IActionResult CaptureReview(IFormCollection form)
+        {
+           int rating = Convert.ToInt32(form["ratingValue"]);
+            string comment = form["reviewComment"];
+            //Debug.Write(rating);
+            //Debug.Write(comment);
+
+            return RedirectToAction("Index", "Purchase");
+        }
+
     }
 }
