@@ -10,8 +10,8 @@
 </head>
 <body>
     <header>
-        
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" >
+
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a asp-area="" asp-controller="Gallery" asp-action="Index"><img src="/Logo/shopgood-logo.png"></a>
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
@@ -28,7 +28,7 @@
                         </li>
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><img src="/Logo/cart-icon-28356.png" height="25", width="25"></a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><img src="/Logo/cart-icon-28356.png" height="25" , width="25"></a>
                         </li>
                         <li class="nav-item">
                             <div style="border-radius: 20px; background-color: #212121">
@@ -48,6 +48,9 @@
         </div>
     </div>
 
-
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

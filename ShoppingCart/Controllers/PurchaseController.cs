@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 
 namespace ShoppingCart.Controllers
 {
@@ -18,7 +20,7 @@ namespace ShoppingCart.Controllers
             this.dbContext = dbContext;
 
         }
-        [Route("Purchases")]
+        
         public IActionResult Index()
         {
             return View();
@@ -51,8 +53,17 @@ namespace ShoppingCart.Controllers
                 x.ProductName == productName
             ).First();
 
-            return product;
-                    
+            return product;                    
         }
+        public IActionResult CaptureReview(IFormCollection form)
+        {
+           int rating = Convert.ToInt32(form["ratingValue"]);
+            string comment = form["reviewComment"];
+            //Debug.Write(rating);
+            //Debug.Write(comment);
+
+            return RedirectToAction("Index", "Purchase");
+        }
+
     }
 }
