@@ -1,14 +1,16 @@
 ﻿@{
     ViewData["Title"] = "Login";
-}
+ }
 
-<h2>Login</h2>
+<h2>Member Login</h2>
 
-<form action="Gallery" method="post">
+
+<form action="/Login/Login" method="post">
     <div style="text-align:center">
         <div class="my_tbl">
             <div class="my_row">
                 <div class="my_cell">
+                    
                     Username
                 </div>
                 <div class="my_cell">
@@ -17,6 +19,7 @@
             </div>
             <div class="my_row">
                 <div class="my_cell">
+                  
                     Password
                 </div>
                 <div class="my_cell">
@@ -25,10 +28,50 @@
             </div>
             <div class="my_row">
                 <div class="my_cell"></div>
-                <div class="my_cell" style="text-align: right">
-                    <input type="submit" value="Login" class="btn btn-primary" />
+                <br />
+                <div class="my_cell" style="text-align: center">
+                    <input type="submit" value="Login Member " class="btn btn-primary" />
+                    <br />
+                    <br />
+                    <!--
+                    <div class="my_cell" style="text-align: center">
+                        <input type="submit" value="Guest-View  " class="btn btn-primary" />
+                    </div>
+                        -->
+                    <p><font color="red">@TempData["Message"]</font></p>
+                
                 </div>
             </div>
         </div>
+</form>
+
+
+<form action="/Login/GuestLogin" method="post">
+
+    <div class="my_cell" style="text-align: center">
+       
+        <div class="my_cell" style="text-align: center">
+            <input type="submit" value="Login as Guest  " class="btn btn-primary" />
+        </div>
+
+        
     </div>
+
+</form>
+
+<!--New user Registration   
+-->
+<br />
+<br />
+
+<form action="/Login/Newusersignup" method="post">
+    <div class="my_cell" style="text-align: center">
+
+        <div class="my_cell" style="text-align: center">
+            <input type="submit" value="New user Sign-up  " class="btn btn-primary" />
+        </div>
+
+
+    </div>
+
 </form>
