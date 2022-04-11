@@ -71,7 +71,7 @@ namespace ShoppingCart.Controllers
             Session session = new Session()
             {
                 Customer = customer
-            }
+            };
 
             dbContext.Sessions.Add(session);
             dbContext.SaveChanges();

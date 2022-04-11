@@ -24,7 +24,8 @@ namespace ShoppingCart.Controllers
         public IActionResult Index()
         {
             // get the customId via session
-            Customer currentCustomer = dbContext.Customers.FirstOrDefault(x => x.FullName == "Tom Cruise");
+            Customer currentCustomer = CheckLoggedIn();
+
 
             // get purchase list via customid
             List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
@@ -88,5 +89,31 @@ namespace ShoppingCart.Controllers
             return RedirectToAction("Index", "Purchase");
         }
 
+        public Customer CheckLoggedIn()
+        {
+            Customer currentCustomer = new Customer();
+
+            if (Request.Cookies["SessionId"] != null)
+            {
+
+                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
+                Debug.WriteLine(sessionId.ToString());
+                Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
+
+                if (session == null)
+                {
+                    currentCustomer = null;
+                    return currentCustomer;
+                }
+
+                currentCustomer = dbContext.Customers.FirstOrDefault(x => x == session.Customer);
+
+            }
+            else
+            {
+                currentCustomer = null;
+            }
+            return currentCustomer;
+        }
     }
 }
