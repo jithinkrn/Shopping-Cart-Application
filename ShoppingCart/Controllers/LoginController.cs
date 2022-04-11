@@ -25,7 +25,8 @@ namespace ShoppingCart.Controllers
         {
             if (Request.Cookies["SessionId"] != null)
             {
-                Guid sessionId = Guid.Parse(Request.Cookies["sessionId"]);
+                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);             
+
                 Session session = dbContext.Sessions.FirstOrDefault(x =>
                     x.Id == sessionId
                 );
@@ -48,6 +49,7 @@ namespace ShoppingCart.Controllers
         {
             string username = form["username"];
             string password = form["password"];
+            string checkout = form["checkout"];
 
             HashAlgorithm sha = SHA256.Create();
             byte[] hash = sha.ComputeHash(
@@ -60,7 +62,8 @@ namespace ShoppingCart.Controllers
 
             if (customer == null)
             {
-                TempData["Message"] = "Username/Password Incorrect -Or-Click Login as Guest";
+                TempData["Message"] = "Username/Password Incorrect";
+
                 return RedirectToAction("Index", "Login");
             }
 
@@ -68,7 +71,7 @@ namespace ShoppingCart.Controllers
             Session session = new Session()
             {
                 Customer = customer
-            };
+            }
 
             dbContext.Sessions.Add(session);
             dbContext.SaveChanges();
@@ -77,24 +80,25 @@ namespace ShoppingCart.Controllers
             Response.Cookies.Append("SessionId", session.Id.ToString());
             Response.Cookies.Append("UserName", customer.UserName);
 
-        public IActionResult GuestLogin(IFormCollection form)
-        {
-         return RedirectToAction("Index", "Gallery");
+
+            //coming from checkout stuff
+
+            return RedirectToAction("Index", "Gallery");
         }
 
         public IActionResult GuestLogin(IFormCollection form)
         {
-        
-            { return RedirectToAction("Index", "Gallery"); }
+            return RedirectToAction("Index", "Gallery");
         }
 
         /*Newuser Sign up*/
+
 
         public IActionResult Newusersignup(IFormCollection form)
         {
             return View();
         }
-
+    
         public IActionResult Newuser(IFormCollection form)
         {
             string fullname = form["fullname"];
@@ -131,9 +135,18 @@ namespace ShoppingCart.Controllers
                 return RedirectToAction("Index", "Login");
             }
 
+            /* dbContext.Add(new Customer
+             {
+                 UserName = username,
+                 FullName = fullname,
+                 PassHash = hash
+             }); 
+
+             dbContext.SaveChanges();
+             return RedirectToAction("Index", "Login");*/
 
         }
 
     }
-}
 
+}

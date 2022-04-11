@@ -15,7 +15,9 @@ namespace ShoppingCart.Models
             ShoppingCarts = new List<Cart>();
             ActivationCodes = new List<ActivationCode>();
             ProductRatings = new List<ProductRating>();
+            GuestCarts = new List<GuestCart>();
             Purchases = new List<Purchase>();
+
         }
 
         //Primary key   
@@ -43,8 +45,11 @@ namespace ShoppingCart.Models
         //Products has 1 to many relationship with ProductRating 
         public virtual ICollection<ProductRating> ProductRatings { get; set; }
 
+        public virtual ICollection<GuestCart> GuestCarts { get; set; }
+
         //Products has 1 to many relationship with Purchases 
         public virtual ICollection<Purchase> Purchases { get; set; }
+
 
     }
 }
