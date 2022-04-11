@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
@@ -411,17 +412,22 @@ namespace ShoppingCart.Controllers
             {
                 //if logged in
                 Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
+
                 Session session = db.Sessions.FirstOrDefault(x => x.Id == sessionId);
+
+                if (session == null)
+                {
+                    currentCustomer = null;
+                    return currentCustomer;
+                }
                 currentCustomer = db.Customers.FirstOrDefault(x => x == session.Customer);
-                return currentCustomer;
+
             }
             else
             {
                 currentCustomer = null;
-                //if not logged in
-                return currentCustomer;
             }
-
+            return currentCustomer;
         }
     }
 }
