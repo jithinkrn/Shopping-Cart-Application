@@ -30,37 +30,61 @@
 
                         <tr>
                             <td class="rating_col">
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+                                                                
 
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
-
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
-
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
-
-                                <img id="@product.ImageName" class="rating_img" src="@uploadDir/starWhite.png" />
+                                    <div class='imageoverlap1'>
+                                        <img id="star1Y" class="rating_imgH" src="@uploadDir/starYellow.png " onclick="RateStar(1)" />
+                                    </div>
+                                    <div class='imageoverlap1'>
+                                        <img id="star1W" class="rating_imgV" src="@uploadDir/starWhite.png" onclick="RateStar(1)" />                                        
+                                    </div>
+                                    <div class='imageoverlap2'>                                        
+                                        <img id="star2Y" class="rating_imgH" src="@uploadDir/starYellow.png" onclick="RateStar(2)"/>
+                                    </div>
+                                    <div class='imageoverlap2'>
+                                        <img id="star2W" class="rating_imgV" src="@uploadDir/starWhite.png" onclick="RateStar(2)" />
+                                    </div>
+                                    <div class='imageoverlap3'>
+                                        <img id="star3Y" class="rating_imgH" src="@uploadDir/starYellow.png" onclick="RateStar(3)"/>
+                                    </div>
+                                    <div class='imageoverlap3'>
+                                        <img id="star3W" class="rating_imgV" src="@uploadDir/starWhite.png" onclick="RateStar(3)" />                                       
+                                    </div>
+                                    <div class='imageoverlap4'>
+                                        <img id="star4Y" class="rating_imgH" src="@uploadDir/starYellow.png" onclick="RateStar(4)"/>
+                                    </div> 
+                                    <div class='imageoverlap4'>
+                                        <img id="star4W" class="rating_imgV" src="@uploadDir/starWhite.png" onclick="RateStar(4)" />
+                                       
+                                    </div>
+                                    <div class='imageoverlap5'>
+                                        <img id="star5Y" class="rating_imgH" src="@uploadDir/starYellow.png" onclick="RateStar(5)" />                                       
+                                    </div>  
+                                    <div class='imageoverlap5'>
+                                        <img id="star5W" class="rating_imgV" src="@uploadDir/starWhite.png" onclick="RateStar(5)" />
+                                    </div>     
                             </td>
                             <td>
                             </td>
                         </tr>
-
 
                     </tbody>
                 </table>
             </div>
         </div>
         <hr>
-        <h3>Share your experience</h3>
-        <form>
-            <div class="form-group">
-                <label for="comment"></label>
-                <textarea class="form-control" rows="5" id="comment"></textarea>
-            </div>
-            <div>
-                <button type="submit" class="btn btn-primary">Submit</button>
-            </div>
-        </form>
+        <h3>Share your experience (Optional)</h3>
+            <form id = "reviewForm" action="/Purchase/CaptureReview" method="post" onsubmit= "return ValidateReview()">
+                <div class="form-group">
+                    <input type="hidden" id="ratingDummyInput" name="ratingValue" value="0">
+                    <label for="comment"></label>
+                    <textarea class="form-control" rows="5" id="comment" name="reviewComment"></textarea>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
+                </div>
+            </form>
 
-</div>
+    </div>
 
 </div>

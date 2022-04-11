@@ -12,13 +12,19 @@ namespace ShoppingCart.Models
         public DBContext(DbContextOptions<DBContext> options)
             : base(options)
         {
+
+
         }
 
         protected override void OnModelCreating(ModelBuilder model)
         {
+            model.Entity<Product>()
+            .HasMany(P => P.Purchases)
+            .WithOne().OnDelete(DeleteBehavior.NoAction);
 
-          
         }
+
+    
 
         // maps to our tables in the database
         public DbSet<Customer> Customers { get; set; }

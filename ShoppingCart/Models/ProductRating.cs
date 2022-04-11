@@ -17,6 +17,7 @@ namespace ShoppingCart.Models
 
         [MaxLength(1)]
         public int Rating { get; set; }
+        public string ReviewComment { get; set; }
 
         //forien key to map to Customer
         public virtual Guid CustomerID { get; set; }

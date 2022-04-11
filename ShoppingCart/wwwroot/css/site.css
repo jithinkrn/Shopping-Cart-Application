@@ -105,11 +105,18 @@ body {
     width: 300px;
 
 }
-.rating_img {
-
+.rating_imgV {
     padding-left: 10px;
     cursor: pointer;
     width: 33px;
+    
+}
+
+.rating_imgH {
+    padding-left: 10px;
+    cursor: pointer;
+    width: 33px;
+    visibility: hidden;
 }
 .rating_col {
 
@@ -123,6 +130,33 @@ body {
 
 .checked {
     color: orange;
+}
+
+.imageoverlap1 {
+    position: absolute;
+    left:230px
+    
+}
+.imageoverlap2 {
+    position: absolute;
+    left: 275px
+}
+.imageoverlap3 {
+    position: absolute;
+    left: 320px
+}
+.imageoverlap4 {
+    position: absolute;
+    left: 365px
+}
+.imageoverlap5 {
+    position: absolute;
+    left: 410px
+}
+
+.starDisplay {
+    display: flex;
+    position: relative;
 }
 
 
