@@ -77,7 +77,9 @@ namespace ShoppingCart.Controllers
             Response.Cookies.Append("SessionId", session.Id.ToString());
             Response.Cookies.Append("UserName", customer.UserName);
 
-            return RedirectToAction("Index", "Gallery");
+        public IActionResult GuestLogin(IFormCollection form)
+        {
+         return RedirectToAction("Index", "Gallery");
         }
 
         public IActionResult GuestLogin(IFormCollection form)
