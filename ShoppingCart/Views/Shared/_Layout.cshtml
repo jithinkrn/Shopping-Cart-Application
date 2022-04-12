@@ -27,20 +27,29 @@
                             <a class="nav-link text-dark" asp-area="" asp-controller="Gallery" asp-action="Index">Home</a>
                         </li>
 
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Purchase" asp-action="Index">My Purchases</a>
-                        </li>
+                        @{
+                            if (ViewBag.CurrentUserName == "Guest User")
+                            {
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
+                                </li>
+                            }
+                            else
+                            {
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Purchase" asp-action="Index">My Purchases</a>
+                                </li>
+
+                                <li class="nav-item">
+                                    <a class="nav-link text-dark" asp-area="" asp-controller="Logout" asp-action="Index">Logout</a>
+                                </li>
+                            }
+                        }
 
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Logout" asp-action="Index">Logout</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="Index">Login</a>
-                        </li>
-
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index"><img src="/Logo/cart-icon-28356.png" height="25" , width="25">
+                            <a class="nav-link text-dark" asp-area="" asp-controller="Cart" asp-action="Index">
+                                <img src="/Logo/cart-icon-28356.png" height="25" , width="25">
                             </a>
                         </li>
 
@@ -49,7 +58,7 @@
                                 <a style="color: white" class="nav-link" asp-area="" asp-controller="Cart" asp-action="Index">@(ViewBag.CartContents)</a>
                             </div>
                         </li>
-                        
+
                     </ul>
                 </div>
             </div>

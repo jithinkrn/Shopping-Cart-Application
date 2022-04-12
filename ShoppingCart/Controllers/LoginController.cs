@@ -36,13 +36,31 @@ namespace ShoppingCart.Controllers
                 {
                     // someone has used an invalid Session ID (to fool us?); 
                     // route to Logout controller//
+                    ViewBag.CurrentUserName = "Guest User";
+                    ViewBag.CartContents = CountNumberOfItems();
                     return RedirectToAction("Index", "Logout");
                 }
 
+                Customer currentCustomer = new Customer();
+                currentCustomer = CheckLoggedIn();
+
+                ViewBag.CartContents = CountNumberOfItems();
+                if (currentCustomer != null)
+                {
+                    ViewBag.CurrentUserName = currentCustomer.FullName;
+                }
+                else
+                {
+                    ViewBag.CurrentUserName = "Guest User";
+                }
+
                 // valid Session ID; route to Gallery page
+
                 return RedirectToAction("Index", "Gallery");
             }
             // no Session ID; show Login page
+            ViewBag.CurrentUserName = "Guest User";
+            ViewBag.CartContents = CountNumberOfItems();
             return View();
         }
         public IActionResult Login(IFormCollection form)
@@ -82,17 +100,19 @@ namespace ShoppingCart.Controllers
             Response.Cookies.Append("UserName", customer.UserName);
 
             //snippet of code - existing customer
+            //coming from checkout stuff
             if (dbContext.GuestCarts.ToList().Count() > 0) {
                 TransferFromGuestToUserCart(customer);
+                ViewBag.CurrentUserName = customer.FullName;
+                ViewBag.CartContents = CountNumberOfItems();
+                return RedirectToAction("Index", "Cart");
             }
-
 
             ViewBag.CurrentUserName = customer.FullName;
             ViewBag.CartContents = CountNumberOfItems();
             //end snippet of code
-            //coming from checkout stuff
 
-            return RedirectToAction("Index", "Cart");
+            return RedirectToAction("Index", "Gallery");
         }
 
         public IActionResult GuestLogin(IFormCollection form)
@@ -237,11 +257,9 @@ namespace ShoppingCart.Controllers
             {
                 Product newProd = dbContext.Products.FirstOrDefault(x => x.Id == item.ProductId);
                 Cart itemInCart = dbContext.Carts.FirstOrDefault(x => x.ProductId == newProd.Id);
-                Debug.WriteLine($"found {item} to shift from guest to cart");
 
                 if (itemInCart == null)
                 {
-                    Debug.WriteLine($"didn't find {itemInCart} in cart, putting {item.OrderQty} in it");
                     //if not, create a new entry
                     dbContext.Carts.Add(new Cart
                     {
@@ -252,17 +270,14 @@ namespace ShoppingCart.Controllers
                 }
                 else
                 {
-                    Debug.WriteLine($"found {itemInCart} in cart, adding {item.OrderQty} in it");
                     //if found, add 1 to the product quantity
                     itemInCart.OrderQty += item.OrderQty;
                 }
 
-                Debug.WriteLine($"added {item.OrderQty} {newProd.ProductName} to userCart");
 
                 dbContext.SaveChanges();
 
                 dbContext.GuestCarts.Remove(item);
-                Debug.WriteLine($"removed {item} from guestCart");
 
                 dbContext.SaveChanges();
             }
