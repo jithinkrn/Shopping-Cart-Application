@@ -133,33 +133,43 @@ namespace ShoppingCart.Controllers
         }
 
         //will be used in the cart page
-        public void SubtractFromCart(string productName, Customer currentUser)
+        public void SubtractFromCart(string productName)
         {
-            //check for the current product in the database
             Product newProd = db.Products.FirstOrDefault(x => x.ProductName == productName);
 
-            //check for the current customer who is using
-            Customer currentCustomer = currentUser;
+            Customer currentCustomer = CheckLoggedIn();
 
-            //query for the item in the shoppingcarts db
-            Cart itemInCart = db.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
-
-            if (itemInCart != null)
+            if (currentCustomer != null)
             {
-                //query in the database whether there is only one more of the item
+                Cart itemInCart = db.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
+
                 if (itemInCart.OrderQty == 1)
                 {
-                    //if yes, remove
                     db.Carts.Remove(itemInCart);
                 }
                 else
                 {
-                    //if not, subtract 1 to the product quantity
                     itemInCart.OrderQty--;
                 }
+                Debug.WriteLine("Removed from CustomerCart");
+                db.SaveChanges();
             }
+            else
+            {
 
-            db.SaveChanges();
+                GuestCart itemInCart = db.GuestCarts.FirstOrDefault(x => x.ProductId == newProd.Id);
+
+                if (itemInCart.OrderQty == 1)
+                {
+                    db.GuestCarts.Remove(itemInCart);
+                }
+                else
+                {
+                    itemInCart.OrderQty--;
+                }
+                Debug.WriteLine("Removed from GuestCart");
+                db.SaveChanges();
+            }
         }
         public IActionResult Checkout()
         {
