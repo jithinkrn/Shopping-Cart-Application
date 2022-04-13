@@ -21,6 +21,7 @@ for details on configuring this project to bundle and minify static web assets. 
     align-items: center;
 }
 
+
 .topcaption {
     color: #ffffff;
     padding-Left: 100px;
@@ -202,5 +203,9 @@ body {
     width: 100%;
 }
 
+}
+.reviewTb12 {
+    width: 100%;
+}
 
 
