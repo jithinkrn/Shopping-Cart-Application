@@ -32,13 +32,13 @@ namespace ShoppingCart.Controllers
             //Seed an item for user
             if (currentCustomer != null)
             {
-                /*
+                
                 Product newProd = FetchRandomProduct();
 
                 AddToCart(newProd.ProductName);
 
                 db.SaveChanges();
-                */
+                
                 customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
 
                 foreach (Cart item in customerCart)
@@ -51,13 +51,13 @@ namespace ShoppingCart.Controllers
 
             }
             else {
-                /*
+                
                 Product newProd = FetchRandomProduct();
 
                 AddToCart(newProd.ProductName);
 
                 db.SaveChanges();
-                */
+                
                 guestCart = db.GuestCarts.ToList();
 
                 foreach (GuestCart item in guestCart)

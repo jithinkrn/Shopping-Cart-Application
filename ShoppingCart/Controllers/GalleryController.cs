@@ -61,6 +61,20 @@ namespace ShoppingCart.Controllers
 
         public IActionResult Product(Guid productId)
         {
+            //start of snippet
+            Customer currentCustomer = CheckLoggedIn();
+
+            ViewBag.CartContents = CountNumberOfItems();
+            if (currentCustomer != null)
+            {
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+            }
+            else
+            {
+                ViewBag.CurrentUserName = "Guest User";
+            }
+            //end of snippet of code
+
             Product product = getProduct(productId);
 
             ViewBag.product = product;
