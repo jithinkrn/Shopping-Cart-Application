@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace ShoppingCart.Models
 {
-    // class to create to receive Jason object as product
+    // class to receive Jason object as product
     public class ProdJson
     {
         public ProdJson()
