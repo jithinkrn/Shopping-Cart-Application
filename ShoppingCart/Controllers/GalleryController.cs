@@ -127,7 +127,6 @@ namespace ShoppingCart.Controllers
         public IActionResult PassToCart([FromBody] ProdJson prodJson)
         {
             string ProductName = prodJson.ProductName;
-            Customer curCustomer = CheckLoggedIn();
 
             //add to gust cart if cutomer is not logged in
 

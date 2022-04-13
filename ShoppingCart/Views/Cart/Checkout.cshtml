@@ -1,6 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
-    Dictionary<Product, int>ListItemQuantities = ViewBag.ItemQty;
+    Dictionary<Product, int> ListItemQuantities = ViewBag.ItemQty;
     List<Product> RandomList = ViewBag.ListOfRandomProds;
     double totalPrice = ViewBag.TotalPrice;
     int rewardPoints = ViewBag.Reward;
@@ -11,8 +11,16 @@
     td {
         vertical-align: middle;
     }
-
 </style>
+
+<script>
+    function UpdateCart(productName) {
+        let cartcontent = document.getElementById("currentCartContents");
+        let currentVal = parseInt(cartcontent.innerHTML);
+        cartcontent.innerHTML = currentVal + 1;
+        AddItemToCart(productName);
+    }
+</script>
 
 <div class="container">
     <div class="text-center">
@@ -25,7 +33,7 @@
             <tr>
                 <td>
                     <form action="/Purchase/Index" method="post">
-                        <button class ="btn btn-primary" type="submit">View My Purchases</button>
+                        <button class="btn btn-primary" type="submit">View My Purchases</button>
                     </form>
                 </td>
                 <td style="padding: 0px 20px">
@@ -33,7 +41,7 @@
                 </td>
                 <td>
                     <form action="/Gallery/Index" method="post">
-                        <button class ="btn btn-outline-primary" type="submit">Continue Shopping</button>
+                        <button class="btn btn-outline-primary" type="submit">Continue Shopping</button>
                     </form>
                 </td>
             </tr>
@@ -93,9 +101,9 @@
                                         </button>
                                     </form>
                                     @*action to change to cartcontroller/addcart*@
-                                    <form action="" method="post">
-                                        <button class="btn btn-outline-primary"><b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add to cart</button>
-                                    </form>
+
+                                    <button class="btn btn-outline-primary add-to-cart" id="@product.ProductName" onclick="UpdateCart(this.id)"><b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add to cart</button>
+
                                 </div>
                             </div>
                         </div>
@@ -103,7 +111,5 @@
                 }
             </div>
         </div>
-
-
     </div>
 </div>

@@ -35,8 +35,6 @@ namespace ShoppingCart.Controllers
                 
                 Product newProd = FetchRandomProduct();
 
-                AddToCart(newProd.ProductName);
-
                 db.SaveChanges();
                 
                 customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
@@ -53,8 +51,6 @@ namespace ShoppingCart.Controllers
             else {
                 
                 Product newProd = FetchRandomProduct();
-
-                AddToCart(newProd.ProductName);
 
                 db.SaveChanges();
                 
@@ -408,6 +404,16 @@ namespace ShoppingCart.Controllers
                 currentCustomer = null;
             }
             return currentCustomer;
+        }
+
+        public IActionResult PassToCart([FromBody] ProdJson prodJson)
+        {
+            string ProductName = prodJson.ProductName;
+
+            AddToCart(ProductName);
+
+            //return ok to Jason
+            return Json(new { isOkay = true });
         }
     }
 }
