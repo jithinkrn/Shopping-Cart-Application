@@ -19,9 +19,6 @@
                 return;
             }
             elem.onclick = function (event) {
-                let cartcontent = document.getElementById("currentCartContents");
-                let currentVal = parseInt(cartcontent.innerHTML);
-                cartcontent.innerHTML = currentVal + 1;
                 AddItemToCart("@product.ProductName")
             }
         RateStar(@averageRating)
