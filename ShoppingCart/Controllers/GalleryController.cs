@@ -3,7 +3,6 @@ using System;
 using System.Diagnostics;
 using System.Collections.Generic;
 using System.Linq;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
@@ -84,8 +83,6 @@ namespace ShoppingCart.Controllers
             List<ReviewedCustomer> ReviewedCustomers = GetReviewComment(productId);
 
             //pass all retrieved info to the view
-         
-            Customer currentCustomer = CheckLoggedIn();
 
             ViewBag.currentCustomer = currentCustomer;
             ViewBag.product = product;
@@ -129,20 +126,13 @@ namespace ShoppingCart.Controllers
         }
         public IActionResult PassToCart([FromBody] ProdJson prodJson)
         {
-            CartController cart = new CartController(dbContext);
             string ProductName = prodJson.ProductName;
             Customer curCustomer = CheckLoggedIn();
 
             //add to gust cart if cutomer is not logged in
-            if (curCustomer == null)
-            {
-                cart.AddToCart(ProductName);               
-            }
-            //add to cutomers cart if cutomer is has logged in
-            else
-            {
-                cart.AddToCart(ProductName, curCustomer);                
-            }
+
+            AddToCart(ProductName);         
+            
             //return ok to Jason
             return Json(new { isOkay = true });
         }
@@ -164,29 +154,6 @@ namespace ShoppingCart.Controllers
             result.Add("count", ratingCount);
             return result;
 
-        }
-        public Customer CheckLoggedIn()
-        {
-            Customer currentCustomer = new Customer();
-
-            if (Request.Cookies["SessionId"] != null)
-            {
-                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
-                Debug.WriteLine(sessionId.ToString());
-                Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
-
-                if (session == null)
-                {
-                    currentCustomer = null;
-                    return currentCustomer;
-                }
-                currentCustomer = dbContext.Customers.FirstOrDefault(x => x == session.Customer);
-            }
-            else
-            {
-                currentCustomer = null;
-            }
-            return currentCustomer;
         }
 
 
@@ -247,6 +214,59 @@ namespace ShoppingCart.Controllers
             }
 
             return finalCount;
+        }
+
+        public void AddToCart(string productName)
+        {
+            //check for the current product in the database
+            Product newProd = dbContext.Products.FirstOrDefault(x => x.ProductName == productName);
+
+            Customer currentCustomer = CheckLoggedIn();
+
+            if (currentCustomer != null)
+            {
+                Cart itemInCart = dbContext.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
+
+                //query in the database whether the item already exists in the shopping cart of the customer
+                if (itemInCart == null)
+                {
+                    //if not, create a new entry
+                    dbContext.Carts.Add(new Cart
+                    {
+                        ProductId = newProd.Id,
+                        CustomerId = currentCustomer.Id,
+                        OrderQty = 1
+                    });
+                }
+                else
+                {
+                    //if found, add 1 to the product quantity
+                    itemInCart.OrderQty++;
+                }
+                dbContext.SaveChanges();
+            }
+            else
+            {
+
+                GuestCart itemInCart = dbContext.GuestCarts.FirstOrDefault(x => x.ProductId == newProd.Id);
+
+                //query in the database whether the item already exists in the shopping cart of the customer
+                if (itemInCart == null)
+                {
+                    //if not, create a new entry
+                    dbContext.GuestCarts.Add(new GuestCart
+                    {
+                        ProductId = newProd.Id,
+                        OrderQty = 1
+                    });
+                }
+                else
+                {
+                    //if found, add 1 to the product quantity
+                    itemInCart.OrderQty++;
+                }
+                dbContext.SaveChanges();
+            }
         }
 
     }
