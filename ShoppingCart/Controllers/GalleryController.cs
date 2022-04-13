@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
@@ -19,8 +20,22 @@ namespace ShoppingCart.Controllers
         }
 
         public IActionResult Index(string search, string sort)
-    
         {
+            //start of snippet
+            Customer currentCustomer = new Customer();
+            currentCustomer = CheckLoggedIn();
+
+            ViewBag.CartContents = CountNumberOfItems();
+            if (currentCustomer != null)
+            {
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+            }
+            else
+            {
+                ViewBag.CurrentUserName = "Guest User";
+            }
+            //end of snippet of code
+
             if (search == null)
             {
                 search = "";
@@ -39,11 +54,27 @@ namespace ShoppingCart.Controllers
                 ViewData["searchResult"] = ((List<Product>)ViewData["searchResult"]).OrderByDescending(x => x.Price).ToList();
             }
 
+
+
             return View();
         }
 
         public IActionResult Product(Guid productId)
         {
+            //start of snippet
+            Customer currentCustomer = CheckLoggedIn();
+
+            ViewBag.CartContents = CountNumberOfItems();
+            if (currentCustomer != null)
+            {
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+            }
+            else
+            {
+                ViewBag.CurrentUserName = "Guest User";
+            }
+            //end of snippet of code
+
             Product product = getProduct(productId);
 
             ViewBag.product = product;
@@ -58,6 +89,66 @@ namespace ShoppingCart.Controllers
 
             return product;
 
+        }
+
+
+        //for data on top of navbar
+        public Customer CheckLoggedIn()
+        {
+            Customer currentCustomer = new Customer();
+
+            if (Request.Cookies["SessionId"] != null)
+            {
+
+                Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
+                Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
+
+                if (session == null)
+                {
+                    currentCustomer = null;
+                    return currentCustomer;
+                }
+
+                currentCustomer = dbContext.Customers.FirstOrDefault(x => x == session.Customer);
+
+            }
+            else
+            {
+                currentCustomer = null;
+            }
+            return currentCustomer;
+        }
+
+        public int CountNumberOfItems()
+        {
+            int finalCount = 0;
+
+            Customer currentCustomer = CheckLoggedIn();
+
+            if (currentCustomer != null)
+            {
+                //get all items in the cart under the customer
+                List<Cart> itemsInCart = dbContext.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+
+                //take the quantity of each item
+                foreach (Cart item in itemsInCart)
+                {
+                    finalCount += item.OrderQty;
+                }
+            }
+            else
+            {
+                //get all items in the cart under the customer
+                List<GuestCart> itemsInCart = dbContext.GuestCarts.ToList();
+
+                //take the quantity of each item
+                foreach (GuestCart item in itemsInCart)
+                {
+                    finalCount += item.OrderQty;
+                }
+            }
+
+            return finalCount;
         }
 
     }

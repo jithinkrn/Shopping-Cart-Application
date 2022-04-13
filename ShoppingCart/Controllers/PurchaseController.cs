@@ -26,11 +26,9 @@ namespace ShoppingCart.Controllers
             // get the customId via session
             Customer currentCustomer = CheckLoggedIn();
 
-
             // get purchase list via customid
             List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
 
-           
             Dictionary<Guid, Product> maps = new Dictionary<Guid, Product>();
             Dictionary<Guid, ActivationCode[]> activeCodeMap = new Dictionary<Guid, ActivationCode[]>();
 
@@ -47,6 +45,11 @@ namespace ShoppingCart.Controllers
             ViewData["purchaseList"] = purchases;
             ViewData["productMaps"] = maps;
             ViewData["activeCodeMap"] = activeCodeMap;
+
+            //show items in layout - Gab
+            ViewBag.CartContents = CountNumberOfItems();
+            ViewBag.CurrentUserName = currentCustomer.FullName;
+            //end of snippet of code - Gab
             return View();
         }
 
@@ -89,6 +92,9 @@ namespace ShoppingCart.Controllers
             return RedirectToAction("Index", "Purchase");
         }
 
+
+
+        //for data on top of navbar. don't delete - Gab
         public Customer CheckLoggedIn()
         {
             Customer currentCustomer = new Customer();
@@ -97,7 +103,6 @@ namespace ShoppingCart.Controllers
             {
 
                 Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
-                Debug.WriteLine(sessionId.ToString());
                 Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
 
                 if (session == null)
@@ -115,5 +120,38 @@ namespace ShoppingCart.Controllers
             }
             return currentCustomer;
         }
+
+        public int CountNumberOfItems()
+        {
+            int finalCount = 0;
+
+            Customer currentCustomer = CheckLoggedIn();
+
+            if (currentCustomer != null)
+            {
+                //get all items in the cart under the customer
+                List<Cart> itemsInCart = dbContext.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+
+                //take the quantity of each item
+                foreach (Cart item in itemsInCart)
+                {
+                    finalCount += item.OrderQty;
+                }
+            }
+            else
+            {
+                //get all items in the cart under the customer
+                List<GuestCart> itemsInCart = dbContext.GuestCarts.ToList();
+
+                //take the quantity of each item
+                foreach (GuestCart item in itemsInCart)
+                {
+                    finalCount += item.OrderQty;
+                }
+            }
+
+            return finalCount;
+        }
+        //for data on top of navbar. don't delete - Gab
     }
 }

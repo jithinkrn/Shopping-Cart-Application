@@ -31,7 +31,7 @@ namespace ShoppingCart
         {
             services.AddControllersWithViews();
             services.AddSession();
-
+            services.AddHttpContextAccessor();
             // add our database context into DI container
             services.AddDbContext<DBContext>(opt =>
                 opt.UseLazyLoadingProxies().UseSqlServer(

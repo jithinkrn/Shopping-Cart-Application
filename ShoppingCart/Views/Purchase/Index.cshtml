@@ -1,7 +1,7 @@
 ﻿@{
     ViewData["Title"] = "Purchase Page";
     List<Purchase> purchases = (List<Purchase>)ViewData["purchaseList"];
-    Dictionary<Guid, Product> productMaps = (Dictionary<Guid, Product>) ViewData["productMaps"];
+    Dictionary<Guid, Product> productMaps = (Dictionary<Guid, Product>)ViewData["productMaps"];
 }
 
 <div class="text-center">
@@ -29,19 +29,43 @@
                             <div class="col-4 p-2">
                                 <div class="card">
                                     <form action="/Gallery/Product" method="post">
-                                      
                                     </form>
                                     <div class="card-body">
                                         <form action="/Gallery/Product" method="post">
                                             <button type="submit" class="btn btn-link text-body p-0 m-0" name="productId" value="@purchase.Id">
-                                               
                                             </button>
                                         </form>
-                                        <h5 class="card-title">ProductId: @purchase.ProductId</h5>
-                                        <h5 class="card-title">PurchaesDate: @purchase.PurchaseDate</h5>
-                                        <h5 class="card-title">PurchaseQty: @purchase.PurchaseQty</h5>
-                                        <h5 class="card-title">Product Name: @productMaps.GetValueOrDefault(purchase.Id).ProductName</h5>
-                                        <h5 class="card-title">Product Description: @productMaps.GetValueOrDefault(purchase.Id).Description</h5>
+                                        <span class="card-title">ProductId: @purchase.ProductId</span>
+                                        <span class="card-title">PurchaesDate: @purchase.PurchaseDate</span>
+                                        <span class="card-title">PurchaseQty: @purchase.PurchaseQty</span>
+                                        <span class="card-title">Product Name: @productMaps.GetValueOrDefault(purchase.Id).ProductName</span>
+                                        <span class="card-title">Product Description: @productMaps.GetValueOrDefault(purchase.Id).Description</span>
+                                        @*dropdown or text
+        if (activation key under this particular purchase > 1) {
+        dropdown*@
+                                        <div class="dropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Dropdown button
+                                            </button>
+
+                                            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                                                @*foreach (Activation Key under this purchase)*@
+                                                <a class="dropdown-item" href="#">Action</a> @*one activation key*@
+                                            </div>
+                                        </div>
+                                        @*end of dropdown*@
+
+                                        @*} else {
+        show text of only 1 Activation Key (one line of the activation key)
+        }
+                                        *@
+                                    <form action="/" method="post">
+                                        <button class="btn btn-primary" type="button">
+                                            Review this Purchase
+                                        </button>
+                                    </form>
+
+
                                     </div>
                                 </div>
                             </div>
@@ -52,3 +76,14 @@
         }
     }
 </div>
+
+@*
+    Purchase onHand = db.Purchases.FirstOrDefault(x => x.CustomerId == currentCustomer.Id && x.ProductId == item.ProductId);
+
+    ActivationCode newCode = new ActivationCode
+    {
+             //put the attributes
+             ProductID = item.ProductId,
+             PurchaseID = onHand.Id
+    };
+*@
