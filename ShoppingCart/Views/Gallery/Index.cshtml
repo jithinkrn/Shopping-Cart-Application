@@ -7,38 +7,33 @@
 @*carousel*@
 <div class="container">
     <!-- Content here -->
-=======
-<div class="text-center">
-    <h1 class="display-4">Gallery</h1>
-    <form action="/Cart/Index" method="post">
-        <button type="submit">Go To Cart</button>
-    </form>
-
-</div>
+    <div class="text-center">
+        <h1 class="display-4">Gallery</h1>
+    </div>
 
 @*search bar*@
-<div class="container">
-    <div class="row">
-        <form action="/Gallery/" method="post" class="col-12">
-            <input type="search" class="form-control" name="search" id="search" placeholder="Search..." value="@ViewData["searchInput"]" />
-        </form>
+    <div class="container">
+        <div class="row">
+            <form action="/Gallery/" method="post" class="col-12">
+                <input type="search" class="form-control" name="search" id="search" placeholder="Search..." value="@ViewData["searchInput"]" />
+            </form>
+        </div>
     </div>
-</div>
 
 
 @*sort products*@
-<div class="container">
-    <div class="row">
-        <form action="/Gallery/" method="post" class="col-10 py-2">
-            <label class="form-check-inline">Sort by: &nbsp;</label>
-            <button type="submit" class="btn btn-link p-0" formaction="Index?search=@ViewData["searchInput"]&sort=asc">Price ascending,</button>
-            <button type="submit" class="btn btn-link" formaction="Index?search=@ViewData["searchInput"]&sort=desc">Price descending</button>
-        </form>
-        <div class="text-right pt-3 col-2">
-            <p>@searchResult.Count products found</p>
+    <div class="container">
+        <div class="row">
+            <form action="/Gallery/" method="post" class="col-10 py-2">
+                <label class="form-check-inline">Sort by: &nbsp;</label>
+                <button type="submit" class="btn btn-link p-0" formaction="Index?search=@ViewData["searchInput"]&sort=asc">Price ascending,</button>
+                <button type="submit" class="btn btn-link" formaction="Index?search=@ViewData["searchInput"]&sort=desc">Price descending</button>
+            </form>
+            <div class="text-right pt-3 col-2">
+                <p>@searchResult.Count products found</p>
+            </div>
         </div>
     </div>
-</div>
 
 @*product list*@
 @{
@@ -84,3 +79,4 @@
         </div>
     }
 }
+</div>
