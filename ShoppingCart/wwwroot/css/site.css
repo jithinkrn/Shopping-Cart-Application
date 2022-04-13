@@ -105,11 +105,29 @@ body {
     width: 300px;
 
 }
+
+.my_img2 {
+    cursor: default;
+    width: 300px;
+}
 .rating_imgV {
     padding-left: 10px;
     cursor: pointer;
     width: 33px;
     
+}
+
+.rating_imgProdViewY {
+    padding-left: 10px;
+    cursor: default;
+    width: 33px;
+}
+
+.rating_imgProdViewW {
+    padding-left: 10px;
+    cursor: default;
+    width: 33px;
+    visibility: hidden;
 }
 
 .rating_imgH {
@@ -120,8 +138,15 @@ body {
 }
 .rating_col {
 
-    padding-left : 25px;
-    
+    padding-top: 25px;
+    padding-left: 25px;
+}
+
+
+.rating_col2 {
+    padding-top:30px;
+    padding-left: 25px;
+    padding-bottom: 20px;
 }
 
 .w-15 {
@@ -157,6 +182,24 @@ body {
 .starDisplay {
     display: flex;
     position: relative;
+}
+
+.reviewComment {
+    color: #0384fc;
+    position: relative;
+    font-size: 20px;
+}
+
+.reviewCustName {
+    color: #7d203f;
+    position: relative;
+}
+.reviewComRow{
+
+    width : 100%;
+}
+.reviewTbl {
+    width: 100%;
 }
 
 

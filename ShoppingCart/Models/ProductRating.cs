@@ -20,10 +20,10 @@ namespace ShoppingCart.Models
         public string ReviewComment { get; set; }
 
         //forien key to map to Customer
-        public virtual Guid CustomerID { get; set; }
+        public virtual Guid CustomerId { get; set; }
 
         //forien key to map to Product
-        public virtual Guid ProductID { get; set; }
+        public virtual Guid ProductId { get; set; }
 
 
 

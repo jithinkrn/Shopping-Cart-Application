@@ -12,7 +12,7 @@
     <div class="container">
         <div class="row">
             <div class="col-12">
-                <table class="table table-image">
+                <table class=".table-borderless">
                     <tbody>
                         <tr>
                             <td class="w-15">
@@ -23,14 +23,12 @@
                                 <p>@product.Description </p>
                                 <p><b>@price</b></p>
                                 <p>
-                                    <button type="button" class="btn btn-primary">Buy Again</button>
+                                    <button type="button" class="btn btn-primary" onclick="AddItemToCart('@product.ProductName')">Buy Again</button>
                                 </p>
                             </td>
                         </tr>
-
                         <tr>
-                            <td class="rating_col">
-                                                                
+                            <td class="rating_col2">                                                                
 
                                     <div class='imageoverlap1'>
                                         <img id="star1Y" class="rating_imgH" src="@uploadDir/starYellow.png " onclick="RateStar(1)" />
@@ -67,7 +65,6 @@
                             <td>
                             </td>
                         </tr>
-
                     </tbody>
                 </table>
             </div>
@@ -77,14 +74,14 @@
             <form id = "reviewForm" action="/Purchase/CaptureReview" method="post" onsubmit= "return ValidateReview()">
                 <div class="form-group">
                     <input type="hidden" id="ratingDummyInput" name="ratingValue" value="0">
+                    <input type="hidden" id="productDummyInput" name="ProductID" value="@product.Id">
                     <label for="comment"></label>
-                    <textarea class="form-control" rows="5" id="comment" name="reviewComment"></textarea>
+                    <textarea class="form-control" rows="3" id="comment" name="reviewComment"></textarea>
                 </div>
                 <div>
                     <button type="submit" class="btn btn-primary" value="Submit">Submit</button>
                 </div>
             </form>
-
     </div>
 
 </div>
