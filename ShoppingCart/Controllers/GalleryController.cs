@@ -42,19 +42,17 @@ namespace ShoppingCart.Controllers
             }
 
             List<Product> searchResult = dbContext.Products.Where(x => x.ProductName.Contains(search)).ToList();
-            ViewData["searchResult"] = searchResult;
-            ViewData["searchInput"] = search;
+            ViewBag.SearchResult= searchResult;
+            ViewBag.SearchInput= search;
 
             if (sort == "asc")
             {
-                ViewData["searchResult"] = ((List<Product>)ViewData["searchResult"]).OrderBy(x => x.Price).ToList();
+                ViewBag.SearchResult = searchResult.OrderBy(x => x.Price).ToList();
             }
             else if (sort == "desc")
             {
-                ViewData["searchResult"] = ((List<Product>)ViewData["searchResult"]).OrderByDescending(x => x.Price).ToList();
+                ViewBag.SearchResult = searchResult.OrderByDescending(x => x.Price).ToList();
             }
-
-
 
             return View();
         }
