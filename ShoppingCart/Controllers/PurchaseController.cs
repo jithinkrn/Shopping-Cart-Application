@@ -8,24 +8,20 @@ using ShoppingCart.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Http;
 
-namespace ShoppingCart.Controllers
-{
+namespace ShoppingCart.Controllers{
     public class PurchaseController : Controller
     {
         private DBContext dbContext;
         private const string UPLOAD_DIR = "Images";
         public PurchaseController(DBContext dbContext)
         {
-
             this.dbContext = dbContext;
-
         }
         
         public IActionResult Index()
         {
             // get the customId via session
             Customer currentCustomer = CheckLoggedIn();
-
 
             // get purchase list via customid
             List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
@@ -42,7 +38,6 @@ namespace ShoppingCart.Controllers
                 activeCodeMap.Add(purchase.Id, codes);
             });
 
-
             // inject list to the view
             ViewData["purchaseList"] = purchases;
             ViewData["productMaps"] = maps;
@@ -52,7 +47,6 @@ namespace ShoppingCart.Controllers
 
         public IActionResult Review(string prodSclicked)
         {
-
             prodSclicked = ".NET Charts";
 
             if (prodSclicked == null)
@@ -77,17 +71,46 @@ namespace ShoppingCart.Controllers
                 x.ProductName == productName
             ).First();
 
-            return product;                    
+            return product;
         }
+
+        //TO Update DB with user rating and review comment
         public IActionResult CaptureReview(IFormCollection form)
         {
            int rating = Convert.ToInt32(form["ratingValue"]);
             string comment = form["reviewComment"];
-            //Debug.Write(rating);
-            //Debug.Write(comment);
+            Guid productID = Guid.Parse(form["ProductID"]);
+            Debug.Write("ProductId");
+            Customer currentCustomer = CheckLoggedIn();                    
+            Product product = dbContext.Products.FirstOrDefault(x =>
+                x.Id == productID
+            );  
+           
+            //update DB
+                if (currentCustomer != null && product != null)
+                {
+                    ProductRating productRatingNew = new ProductRating
+                    {
+                        Rating = rating,
+                        ReviewComment = comment
 
-            return RedirectToAction("Index", "Purchase");
+                    };
+                    currentCustomer.ProductRatings.Add(productRatingNew);
+                    product.ProductRatings.Add(productRatingNew);
+                }
+                dbContext.SaveChanges();                                          
+                return RedirectToAction("Index", "Purchase");
         }
+        //Check if the rating for a already product exixt in the DB by a customer
+        public bool CheckProductRatingExists(Guid ProductID, Guid CustomerID)
+        {
+            ProductRating productRating = dbContext.ProductRatings.FirstOrDefault(x =>
+               x.ProductId == ProductID && x.CustomerId == CustomerID);
+            if (productRating == null)
+            {
+                return false;
+            }
+            return true;        }
 
         public Customer CheckLoggedIn()
         {
@@ -95,7 +118,6 @@ namespace ShoppingCart.Controllers
 
             if (Request.Cookies["SessionId"] != null)
             {
-
                 Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
                 Debug.WriteLine(sessionId.ToString());
                 Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
@@ -105,9 +127,7 @@ namespace ShoppingCart.Controllers
                     currentCustomer = null;
                     return currentCustomer;
                 }
-
                 currentCustomer = dbContext.Customers.FirstOrDefault(x => x == session.Customer);
-
             }
             else
             {

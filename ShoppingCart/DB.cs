@@ -24,7 +24,7 @@ namespace ShoppingCart
         {
             SeedCustomer();
             SeedProduct();
-            SeedProductRating();
+            //SeedProductRating();
             SeedPurchase();
 
         }

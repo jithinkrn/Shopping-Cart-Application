@@ -14,13 +14,10 @@ namespace ShoppingCart.Models
             // user login
             Timestamp = DateTimeOffset.Now.ToUnixTimeSeconds();
         }
-
-        // primary key
-       
+        // primary key       
         public Guid Id { get; set; }
 
-        // session timestamp. 
-        
+        // session timestamp.         
         public long Timestamp { get; set; }
 
         // the user that this session is associated with

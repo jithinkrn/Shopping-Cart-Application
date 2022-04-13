@@ -2,8 +2,6 @@
 
 //to switch between white star to yellow star uponclick
 
-
-
     let ratingGlobal = 0
     function RateStar(rating) {
         switch (rating) {
@@ -88,8 +86,11 @@
             default:
                 break;
         }
-    }
- function ValidateReview() {
+}
+
+//must rate the product before submitting
+function ValidateReview()
+{
         if (ratingGlobal == 0) {
             alert("Please rate the product");
             return false;
@@ -100,7 +101,38 @@
             alert("Thank you for you review!");
             //return true;
         }
+}
+
+//Ad to cart AJAX without refreshin
+function AddItemToCart(ProductName) {
+     
+    let xhr = new XMLHttpRequest();
+    xhr.open("POST", "/Gallery/PassToCart");
+    xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+    xhr.onreadystatechange = function () {
+        if (this.readyState === XMLHttpRequest.DONE) {
+            // receive response from server
+            if (this.status == 200) {
+                alert("Item added to your cart")
+                return;
+            }
+            // convert from JSON string to JavaScript object
+            let data = JSON.parse(this.responseText);
+            // check availability response
+            if (data.isOkay == false) {
+                alert("Unable to Add to Cart. Try again");
+            }
+        }
     }
+    let data = {
+        "ProductName": ProductName
+    };
+    xhr.send(JSON.stringify(data))
+}
+
+
+
+
 
 
 
