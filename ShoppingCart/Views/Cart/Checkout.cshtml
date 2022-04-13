@@ -18,7 +18,7 @@
     <div class="text-center">
         <div style="margin-bottom:3%">
             <h1 class="display-4">Thank you for your purchase!</h1>
-            <h3>You gained @(additionalPoints) from this purchase. You now have @(rewardPoints) points.</h3>
+            <h3>You gained @(additionalPoints) points from this purchase. You now have @(rewardPoints) points.</h3>
         </div>
 
         <table style="margin:auto">
@@ -53,15 +53,15 @@
                     @{ foreach (KeyValuePair<Product, int> pair in ListItemQuantities)
                         {
                             <tr>
-                                <td class="text-center"><img src="~/Images/@pair.Key.ImageName" alt="Alternate Text" style="height: 100px; width: 100px" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>@pair.Key.ProductName</b></td>
-                                <td class="text-center">@pair.Value</td>
-                                <td class="text-center">$@(pair.Key.Price.ToString("0,0.00"))</td>
-                                <td class="text-center">$@((pair.Key.Price*pair.Value).ToString("0,0.00"))</td>
+                                <td class="align-items-md-start"><img src="~/Images/@pair.Key.ImageName" alt="Alternate Text" style="height: 100px; width: 100px" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<b>@pair.Key.ProductName</b></td>
+                                <td class="align-items-md-start">@pair.Value</td>
+                                <td class="align-items-md-start">$@(pair.Key.Price.ToString("0,0.00"))</td>
+                                <td class="align-items-md-start">$@((pair.Key.Price*pair.Value).ToString("0,0.00"))</td>
                             </tr>
                         }
                     }
 
-                    <tr class="bg-primary" style="color:white">
+                    <tr class="bg-primary align-items-md-start" style="color:white">
                         <td></td>
                         <td></td>
                         <td><b>TOTAL PRICE</b></td>

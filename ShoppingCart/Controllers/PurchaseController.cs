@@ -26,11 +26,9 @@ namespace ShoppingCart.Controllers
             // get the customId via session
             Customer currentCustomer = CheckLoggedIn();
 
-
             // get purchase list via customid
             List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
 
-           
             Dictionary<Guid, Product> maps = new Dictionary<Guid, Product>();
             Dictionary<Guid, ActivationCode[]> activeCodeMap = new Dictionary<Guid, ActivationCode[]>();
 
@@ -105,7 +103,6 @@ namespace ShoppingCart.Controllers
             {
 
                 Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
-                Debug.WriteLine(sessionId.ToString());
                 Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
 
                 if (session == null)

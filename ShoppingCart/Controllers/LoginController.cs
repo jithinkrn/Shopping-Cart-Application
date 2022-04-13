@@ -248,8 +248,6 @@ namespace ShoppingCart.Controllers
 
             Customer currentCustomer = user;
 
-            Debug.WriteLine(currentCustomer.FullName);
-
             List<GuestCart> guestCart = dbContext.GuestCarts.ToList();
             List<Cart> userCart = dbContext.Carts.Where(x => x.CustomerId == user.Id).ToList();
 

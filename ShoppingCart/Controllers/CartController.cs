@@ -32,12 +32,13 @@ namespace ShoppingCart.Controllers
             //Seed an item for user
             if (currentCustomer != null)
             {
+                /*
                 Product newProd = FetchRandomProduct();
 
                 AddToCart(newProd.ProductName);
 
                 db.SaveChanges();
-
+                */
                 customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
 
                 foreach (Cart item in customerCart)
@@ -50,12 +51,13 @@ namespace ShoppingCart.Controllers
 
             }
             else {
+                /*
                 Product newProd = FetchRandomProduct();
 
                 AddToCart(newProd.ProductName);
 
                 db.SaveChanges();
-
+                */
                 guestCart = db.GuestCarts.ToList();
 
                 foreach (GuestCart item in guestCart)
@@ -105,7 +107,6 @@ namespace ShoppingCart.Controllers
                     //if found, add 1 to the product quantity
                     itemInCart.OrderQty++;
                 }
-                Debug.WriteLine("Added to CustomerCart");
                 db.SaveChanges();
             }
             else {
@@ -127,7 +128,6 @@ namespace ShoppingCart.Controllers
                     //if found, add 1 to the product quantity
                     itemInCart.OrderQty++;
                 }
-                Debug.WriteLine("Added to GuestCart");
                 db.SaveChanges();
             }
         }
@@ -151,7 +151,6 @@ namespace ShoppingCart.Controllers
                 {
                     itemInCart.OrderQty--;
                 }
-                Debug.WriteLine("Removed from CustomerCart");
                 db.SaveChanges();
             }
             else
@@ -167,21 +166,15 @@ namespace ShoppingCart.Controllers
                 {
                     itemInCart.OrderQty--;
                 }
-                Debug.WriteLine("Removed from GuestCart");
                 db.SaveChanges();
             }
         }
         public IActionResult Checkout()
         {
-            //validate session
-            //if not yet logged in, save all items? guestCart option?
-            //do we store session as guest user?
             Customer currentCustomer = CheckLoggedIn();
 
             if (currentCustomer != null)
             {
-                //call TransferFromGuestToUserCart(currentCustomer); when logging in
-
                 //get all items in the cart under the customer
                 List<Cart> itemsInCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
 
@@ -196,32 +189,31 @@ namespace ShoppingCart.Controllers
                 //transform all items into purchases
                 foreach (Cart item in itemsInCart)
                 {
-
                     Purchase onHand = db.Purchases.FirstOrDefault(x => x.CustomerId == currentCustomer.Id && x.ProductId == item.ProductId);
 
-                    for (int i = item.OrderQty; i < 1; i--)
+                    if (onHand == null)
                     {
-                        //add to purchases list
-                        if (onHand == null)
+                        //if it is not in the purchases db, create new purchase, add activation code and set quantity to 1
+                        onHand = new Purchase
                         {
-                            //if it is not in the purchases db, create new purchase, add activation code and set quantity to 1
-                            onHand = new Purchase
-                            {
-                                ProductId = item.ProductId,
-                                CustomerId = currentCustomer.Id,
-                                PurchaseDate = DateTime.Now,
-                                PurchaseQty = 1
-                            };
+                            ProductId = item.ProductId,
+                            CustomerId = currentCustomer.Id,
+                            PurchaseDate = DateTime.Now,
+                            PurchaseQty = item.OrderQty
+                        };
+                        db.Purchases.Add(onHand);
+                    }
+                    else
+                    {
+                        //if it is, add to purchase qty
+                        onHand.PurchaseQty += item.OrderQty;
+                    }
 
-                            db.Purchases.Add(onHand);
-                        }
-                        else
-                        {
-                            //if it is, add to purchase qty
-                            onHand.PurchaseQty++;
-                        }
+                    db.SaveChanges();
 
-                        db.SaveChanges();
+                    for (int i = item.OrderQty; i > 0; i--)
+                    {
+
                         //generate activation code
                         ActivationCode newCode = new ActivationCode
                         {
@@ -233,7 +225,6 @@ namespace ShoppingCart.Controllers
                         db.ActivationCodes.Add(newCode);
 
                         db.SaveChanges();
-
                     }
 
                     //remove from the ShoppingCarts database
@@ -242,16 +233,14 @@ namespace ShoppingCart.Controllers
                     itemQty.Add(findProduct, findTheItem.OrderQty);
 
                     db.Carts.Remove(findTheItem);
-
                     db.SaveChanges();
                 }
 
-
+                int countOfPurchases = db.Purchases.Where(x => x.CustomerId == currentCustomer.Id).ToList().Count;
 
                 int additionalPoints = (int)Math.Floor(totalPrice / 10);
                 currentCustomer.RewardPoint += additionalPoints;
                 db.SaveChanges();
-
 
                 //send the details of the purchases to ViewBag (for View purposes)
                 //add product details to the dictionary
@@ -403,7 +392,6 @@ namespace ShoppingCart.Controllers
             if (Request.Cookies["SessionId"] != null)
             {
                 Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
-                Debug.WriteLine(sessionId.ToString());
                 Session session = db.Sessions.FirstOrDefault(x => x.Id == sessionId);
 
                 if (session == null)

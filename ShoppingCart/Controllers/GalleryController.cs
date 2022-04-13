@@ -87,7 +87,6 @@ namespace ShoppingCart.Controllers
             {
 
                 Guid sessionId = Guid.Parse(Request.Cookies["SessionId"]);
-                Debug.WriteLine(sessionId.ToString());
                 Session session = dbContext.Sessions.FirstOrDefault(x => x.Id == sessionId);
 
                 if (session == null)
