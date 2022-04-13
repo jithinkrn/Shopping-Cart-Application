@@ -51,6 +51,21 @@ namespace ShoppingCart.Controllers{
 
         public IActionResult Review(string prodSclicked)
         {
+            //start of snippet
+            Customer currentCustomer = new Customer();
+            currentCustomer = CheckLoggedIn();
+
+            ViewBag.CartContents = CountNumberOfItems();
+            if (currentCustomer != null)
+            {
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+            }
+            else
+            {
+                ViewBag.CurrentUserName = "Guest User";
+            }
+            //end of snippet of code
+
             prodSclicked = ".NET Charts";
 
             if (prodSclicked == null)
@@ -71,6 +86,8 @@ namespace ShoppingCart.Controllers{
         }
         public Product getProduct(string productName)
         {
+            
+            
             Product product = dbContext.Products.Where(x =>
                 x.ProductName == productName
             ).First();

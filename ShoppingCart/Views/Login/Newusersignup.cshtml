@@ -2,50 +2,42 @@
     ViewData["Title"] = "New User";
  }
 
-<h2>Member Registration</h2>
+<h2><center>Member Registration</center></h2>
 
 <form action="/Login/Newuser" method="post">
 <div style="text-align:center">
     <div class="my_tbl">
         <div class="my_row">
-            <div class="my_cell">
 
-                Fullname
-            </div>
             <div class="my_cell">
-                <input name="fullname" />
+                <b>Fullname </b> <input name="fullname" />
             </div>
         </div>
+        <br />
 
         <div class="my_row">
-            <div class="my_cell">
 
-                Username
-            </div>
             <div class="my_cell">
-                <input name="username" />
+                <b>Username </b><input name="username" />
             </div>
         </div>
-
+        <br />
 
         <div class="my_row">
-            <div class="my_cell">
 
-                Password
-            </div>
             <div class="my_cell">
-                <input name="password" type="password" />
+                <b>Password </b> <input name="password" type="password" />
             </div>
         </div>
         <div class="my_row">
             <div class="my_cell"></div>
             <br />
             <div class="my_cell" style="text-align: center">
-                <input type="submit" value="Register Member " class="btn btn-primary" />
+                <input type="submit" value="Register Member " class="btn btn-primary" id="Loginbutton" />
                 <br />
                 <br />
-              
-        
+
+
 
             </div>
         </div>

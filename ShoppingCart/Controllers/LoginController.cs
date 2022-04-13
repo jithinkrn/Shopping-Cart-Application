@@ -124,7 +124,21 @@ namespace ShoppingCart.Controllers
 
 
         public IActionResult Newusersignup(IFormCollection form)
-        {
+        {//start of snippet
+            Customer currentCustomer = CheckLoggedIn();
+
+
+
+            ViewBag.CartContents = CountNumberOfItems();
+            if (currentCustomer != null)
+            {
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+            }
+            else
+            {
+                ViewBag.CurrentUserName = "Guest User";
+            }
+            //end of snippet of code
             return View();
         }
     
