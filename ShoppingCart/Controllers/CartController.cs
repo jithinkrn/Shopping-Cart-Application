@@ -25,49 +25,44 @@ namespace ShoppingCart.Controllers
         {
 
             Customer currentCustomer = CheckLoggedIn();
-
             Dictionary<Product, int> countOfItems = new Dictionary<Product, int>();
             List<Cart> customerCart = new List<Cart>();
             List<GuestCart> guestCart = new List<GuestCart>();
-            //Seed an item for user
+                       
+
+           // Seed an item for user
             if (currentCustomer != null)
-            {
-                
-                Product newProd = FetchRandomProduct();
-
-                AddToCart(newProd.ProductName);
-
-                db.SaveChanges();
-                
-                customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
-
-                foreach (Cart item in customerCart)
                 {
-                    Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
-                    countOfItems.Add(newItem, item.OrderQty);
-                };
 
-                ViewBag.CurrentUserName = currentCustomer.FullName;
+                    //Product newProd = FetchRandomProduct();
+                    //AddToCart(newProd.ProductName);
+                    //db.SaveChanges();
 
-            }
-            else {
-                
-                Product newProd = FetchRandomProduct();
+                    customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
 
-                AddToCart(newProd.ProductName);
+                    foreach (Cart item in customerCart)
+                    {
+                        Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                        countOfItems.Add(newItem, item.OrderQty);
+                    };
+                    ViewBag.CurrentUserName = currentCustomer.FullName;
 
-                db.SaveChanges();
-                
-                guestCart = db.GuestCarts.ToList();
-
-                foreach (GuestCart item in guestCart)
+                }
+                else
                 {
-                    Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
-                    countOfItems.Add(newItem, item.OrderQty);
-                };
-                ViewBag.CurrentUserName = "Guest User";
 
-            }
+                    //Product newProd = FetchRandomProduct();
+                    //AddToCart(newProd.ProductName);
+                    //db.SaveChanges();
+
+                    guestCart = db.GuestCarts.ToList();
+                    foreach (GuestCart item in guestCart)
+                    {
+                        Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                        countOfItems.Add(newItem, item.OrderQty);
+                    };
+                    ViewBag.CurrentUserName = "Guest User";
+                }
 
             //initializing
 
@@ -75,8 +70,29 @@ namespace ShoppingCart.Controllers
             ViewBag.CountOfItems = countOfItems;
             ViewBag.TotalPrice = CalculateTotalPrice();
             ViewBag.CartContents = CountNumberOfItems();
-
             return View();
+        }
+        //remove item from cart using JSON
+        public IActionResult RemoveItem([FromBody] ProdJson prodJson)
+        {
+            string ProductName = prodJson.ProductName;            
+            SubtractFromCart(ProductName);
+            return Json(new { isOkay = true });
+
+        }
+        //Add item to cart using JSON
+        public IActionResult AddItem([FromBody] ProdJson prodJson)
+        {
+            string ProductName = prodJson.ProductName;            
+            AddToCart(ProductName);
+            return Json(new { isOkay = true });
+        }
+
+        public IActionResult RemoveProduct([FromBody] ProdJson prodJson)
+        {
+            string ProductName = prodJson.ProductName;
+            RemoveProdctFromCart(ProductName);
+            return Json(new { isOkay = true });
         }
 
         //AddToCart (will be used in the gallery, the cart page and the results page)
@@ -85,8 +101,7 @@ namespace ShoppingCart.Controllers
             //check for the current product in the database
             Product newProd = db.Products.FirstOrDefault(x => x.ProductName == productName);
 
-            Customer currentCustomer = CheckLoggedIn();
-            
+            Customer currentCustomer = CheckLoggedIn();            
             if (currentCustomer != null)
             {
                 Cart itemInCart = db.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
@@ -128,6 +143,30 @@ namespace ShoppingCart.Controllers
                     //if found, add 1 to the product quantity
                     itemInCart.OrderQty++;
                 }
+                db.SaveChanges();
+            }
+        }
+
+        //remove the entore product from the cart
+        public void RemoveProdctFromCart(string productName)
+        {
+            Product newProd = db.Products.FirstOrDefault(x => x.ProductName == productName);
+
+            Customer currentCustomer = CheckLoggedIn();
+
+            if (currentCustomer != null)
+            {
+                Cart itemInCart = db.Carts.FirstOrDefault(x => x.ProductId == newProd.Id && x.CustomerId == currentCustomer.Id);
+                                
+                    db.Carts.Remove(itemInCart);                
+                db.SaveChanges();
+            }
+            else
+            {
+                GuestCart itemInCart = db.GuestCarts.FirstOrDefault(x => x.ProductId == newProd.Id);
+                                
+                    db.GuestCarts.Remove(itemInCart);
+                
                 db.SaveChanges();
             }
         }
@@ -265,8 +304,6 @@ namespace ShoppingCart.Controllers
                 //if not logged in
                 return RedirectToAction("Index", "Login");
             }
-
-
         }
 
         public double CalculateTotalPrice() {
@@ -285,11 +322,9 @@ namespace ShoppingCart.Controllers
                     Product takePrice = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
                     //get the product price and multiply the quantity
                     double priceToAdd = takePrice.Price * item.OrderQty;
-
                     /*
                     for any discount logic concerning the price, put them here
                     */
-
                     finalPrice += priceToAdd;
                 }
             }
@@ -303,30 +338,22 @@ namespace ShoppingCart.Controllers
                     Product takePrice = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
                     //get the product price and multiply the quantity
                     double priceToAdd = takePrice.Price * item.OrderQty;
-
                     /*
                     for any discount logic concerning the price, put them here
                     */
-
                     finalPrice += priceToAdd;
-
                 }
             }
-
-
             /*
             for any other discount logic concerning the price, put them here
             */
             return finalPrice;
         }
-
-
         //count number of items
         public int CountNumberOfItems() {
             int finalCount = 0;
 
             Customer currentCustomer = CheckLoggedIn();
-
             if (currentCustomer != null)
             {
                 //get all items in the cart under the customer
@@ -348,23 +375,17 @@ namespace ShoppingCart.Controllers
                 {
                     finalCount += item.OrderQty;
                 }
-
             }
-
             return finalCount;
         }
-
-
         //compute how many reward points for the customer is needed
         public int ComputeRewardPoints(double price) {
             int rewardsTotal = (int)price / 10;
             return rewardsTotal;
         }
-
         public List<Product> RecommendProducts()
         {
             List<Product> listOfProducts = new List<Product>();
-
             while (listOfProducts.Count < 3)
             {
                 Product randomProduct = FetchRandomProduct();
@@ -373,7 +394,6 @@ namespace ShoppingCart.Controllers
                     listOfProducts.Add(randomProduct);
                 }
             }
-
             return listOfProducts;
         }
 
@@ -383,7 +403,6 @@ namespace ShoppingCart.Controllers
             Random rnd = new Random();
 
             Product randomProduct = listOfProducts[rnd.Next(listOfProducts.Count())];
-
             return randomProduct;
         }
 

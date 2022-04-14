@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 
+
 namespace ShoppingCart.Models
 {
     public class ProductRating
@@ -10,6 +11,7 @@ namespace ShoppingCart.Models
         public ProductRating()
         {
             Id = new Guid();
+            ReviewTime = DateTimeOffset.Now.ToUnixTimeSeconds();
         }
 
         //PrimaryKey
@@ -18,6 +20,9 @@ namespace ShoppingCart.Models
         [MaxLength(1)]
         public int Rating { get; set; }
         public string ReviewComment { get; set; }
+
+        [Required]
+        public long ReviewTime { get; set; }
 
         //forien key to map to Customer
         public virtual Guid CustomerId { get; set; }

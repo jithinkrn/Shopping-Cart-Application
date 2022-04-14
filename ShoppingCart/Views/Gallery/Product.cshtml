@@ -9,6 +9,8 @@
 
     int averageRating = productRating["average"];
     int countOfRatings = productRating["count"];
+    
+
 }
 
     <script type="text/javascript">
@@ -38,13 +40,12 @@
                             </td>
                             <td class="w-15">
                                 <h2>@product.ProductName </h2>
-                                <p>@product.Description </p>
-                                <p><b>@price</b></p>
+                                <p>@product.Description </p> 
+                                <br>
                                 <p>
-                                    <button id="addtoCartBtn" type="button" class="btn btn-primary">
-                                            
-                                        Add to Cart
-                                    </button>
+                                    <button id ="addtoCartBtn" class="btn btn-outline-primary">
+                                        <b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Add To Cart
+                                    </button>                                
                                 </p>
 
                             </td>
@@ -123,7 +124,7 @@
 
                         <tr class="reviewComRow">
                             <td class="reviewCustName">
-                                <p>@customer.FullName Says: </p>
+                            <p>@customer.ReviewDate &emsp;&emsp; <b>@customer.FullName</b>:</p>
                             </td>
 
                         <tr class="reviewComRow">

@@ -15,6 +15,7 @@ namespace ShoppingCart.Models
          
         public string FullName { get; set; }
         public string ReviewComment { get; set; }
+        public DateTime ReviewDate { get; set; }
 
 
     }
