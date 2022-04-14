@@ -244,8 +244,6 @@ namespace ShoppingCart.Controllers
                 ViewBag.ItemQty = itemQty;
                 ViewBag.ListOfRandomProds = RecommendProducts();
 
-                //ViewBag.TotalPrice = totalPrice;
-
                 ViewBag.Reward = currentCustomer.RewardPoint;
                 ViewBag.AdditionalPoint = additionalPoints;
                 //all IActionResult Methods will return this
@@ -300,19 +298,11 @@ namespace ShoppingCart.Controllers
                     //get the product price and multiply the quantity
                     double priceToAdd = takePrice.Price * item.OrderQty;
 
-                    /*
-                    for any discount logic concerning the price, put them here
-                    */
-
                     finalPrice += priceToAdd;
 
                 }
             }
 
-
-            /*
-            for any other discount logic concerning the price, put them here
-            */
             return finalPrice;
         }
 
@@ -412,7 +402,6 @@ namespace ShoppingCart.Controllers
 
             AddToCart(ProductName);
 
-            //return ok to Jason
             return Json(new { isOkay = true });
         }
     }
