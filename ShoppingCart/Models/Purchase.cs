@@ -27,8 +27,6 @@ namespace ShoppingCart.Models
 
         //Purchase has 1 to many relationship with ActivationCode 
         public virtual ICollection<ActivationCode> ActivationCodes { get; set; }
-
-       
           
     }
 }
