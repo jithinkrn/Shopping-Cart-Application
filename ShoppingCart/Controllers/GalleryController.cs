@@ -61,9 +61,13 @@ namespace ShoppingCart.Controllers
 
         public IActionResult Product(Guid productId)
         {
+            if (productId == null || productId == Guid.Empty)
+            {
+                return RedirectToAction("Index", "Gallery");
+            }
 
             //start of snippet
-            Customer currentCustomer = CheckLoggedIn();
+                Customer currentCustomer = CheckLoggedIn();
 
             ViewBag.CartContents = CountNumberOfItems();
             if (currentCustomer != null)
@@ -101,10 +105,13 @@ namespace ShoppingCart.Controllers
             var reviewComments =(from p in dbContext.ProductRatings 
                                 where p.ProductId == productId && !string.IsNullOrEmpty(p.ReviewComment)
                                 join c in dbContext.Customers on p.CustomerId equals c.Id
-                                select new
+                                orderby p.ReviewTime descending
+                                 select new
                                 {
                                     c.FullName,
-                                    p.ReviewComment
+                                    p.ReviewComment,
+                                    p.ReviewTime
+
                                 })
                                 .ToList();
             foreach (var item in reviewComments)
@@ -112,12 +119,15 @@ namespace ShoppingCart.Controllers
                 ReviewedCustomer reviewedCustomer = new ReviewedCustomer();
                 reviewedCustomer.FullName = item.FullName;
                 reviewedCustomer.ReviewComment = item.ReviewComment;
+                reviewedCustomer.ReviewDate = 
+                    new DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(item.ReviewTime).ToLocalTime();
                 reviewedCustomers.Add(reviewedCustomer);
             }
             return reviewedCustomers;
         }
         public Product getProduct(Guid productId)
         {
+
             Product product = dbContext.Products.Where(x =>
                x.Id == productId
            ).First();

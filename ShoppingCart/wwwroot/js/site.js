@@ -104,8 +104,7 @@ function ValidateReview()
 }
 
 //Ad to cart AJAX without refreshin
-function AddItemToCart(ProductName) {
-     
+function AddItemToCart(ProductName) {     
     let xhr = new XMLHttpRequest();
     xhr.open("POST", "/Gallery/PassToCart");
     xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
@@ -113,10 +112,12 @@ function AddItemToCart(ProductName) {
         if (this.readyState === XMLHttpRequest.DONE) {
             // receive response from server
             if (this.status == 200) {
+
+                //alert("Item added to your cart")        
                 let cartcontent = document.getElementById("currentCartContents");
-                let currentVal = parseInt(cartcontent.innerHTML);
+                let currentVal = parseInt(cartcontent.innerHTML);            
                 cartcontent.innerHTML = currentVal + 1;
-                alert("Item added to your cart")
+
                 return;
             }
             // convert from JSON string to JavaScript object
@@ -132,6 +133,174 @@ function AddItemToCart(ProductName) {
     };
     xhr.send(JSON.stringify(data))
 }
+
+function RemoveFromCart(ProductName, fieldName, priceFieldName, TotalPriceFielddName) {
+
+    let valField = document.getElementById(fieldName);    
+    let currenFieldVal = parseInt(valField.innerHTML);
+
+    //minus only if quantity is greater than 0
+    if (currenFieldVal > 1) {
+
+        let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Cart/RemoveItem");
+        xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE) {
+                // receive response from server
+                if (this.status == 200) {
+
+                    //update cart quantity
+                    let cartcontent = document.getElementById("currentCartContents");
+                    let currentVal = parseInt(cartcontent.innerHTML);
+                    cartcontent.innerHTML = currentVal - 1;
+                    //update row quantity
+                    valField.innerHTML = currenFieldVal - 1;
+
+                    //update total price for the product                    
+                    var qty = document.getElementById(fieldName).innerHTML;                  
+                    var price = parseFloat(document.getElementById(priceFieldName).innerHTML.replace("$", "").replace(",", ""));
+                    var totalProductPrice = qty * price;
+                    document.getElementById(TotalPriceFielddName).innerHTML =
+                        '$' + totalProductPrice.toLocaleString(undefined, {
+                            minimumFractionDigits: 2, maximumFractionDigits: 2
+                        });
+                    //update GrandTotal
+                    var GrandTotal = parseFloat(document.getElementById("grandTotal").innerHTML.replace("$", "").replace(",", ""));;
+
+                    GrandTotal = GrandTotal - price;
+                    document.getElementById("grandTotal").innerHTML =
+                        '$' + GrandTotal.toLocaleString(undefined, {
+                            minimumFractionDigits: 2, maximumFractionDigits: 2
+                        });
+                    return;
+                 
+                    return;
+                }
+                // convert from JSON string to JavaScript object
+                let data = JSON.parse(this.responseText);
+                // check availability response
+                if (data.isOkay == false) {
+                    alert("Unable to substract from Cart. Try again");
+                }
+            }
+        }
+        let data = {
+            "ProductName": ProductName
+        };
+        xhr.send(JSON.stringify(data))
+    }
+    else
+        return;
+}
+
+function AddtoCart(ProductName, fieldName, priceFieldName, TotalPriceFielddName)
+{
+    
+        let valField = document.getElementById(fieldName);
+        let currenFieldVal = parseInt(valField.innerHTML);
+   
+         let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Cart/AddItem");
+        xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE) {
+                 //receive response from server
+                if (this.status == 200) {
+                     
+                    let cartcontent = document.getElementById("currentCartContents");
+                    let currentVal = parseInt(cartcontent.innerHTML);
+                    cartcontent.innerHTML = currentVal + 1;
+                    valField.innerHTML = currenFieldVal + 1;
+
+                    //update total price for the product                    
+                    var qty = document.getElementById(fieldName).innerHTML;
+                    var price = parseFloat(document.getElementById(priceFieldName).innerHTML.replace("$", "").replace(",", ""));
+                    var totalProductPrice = qty * price;
+                    document.getElementById(TotalPriceFielddName).innerHTML =
+                        '$' + totalProductPrice.toLocaleString(undefined, {
+                        minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                    //update GrandTotal
+                    var GrandTotal = parseFloat(document.getElementById("grandTotal").innerHTML.replace("$", "").replace(",", ""));;
+                    
+                    GrandTotal = GrandTotal + price;
+                    document.getElementById("grandTotal").innerHTML =
+                        '$' + GrandTotal.toLocaleString(undefined, {
+                            minimumFractionDigits: 2, maximumFractionDigits: 2});
+                    return;
+                }
+                // convert from JSON string to JavaScript object
+                let data = JSON.parse(this.responseText);
+                // check availability response
+                if (data.isOkay == false) {
+                    alert("Unable to Add to Cart. Try again");
+                }
+            }
+        }
+        let data = {
+            "ProductName": ProductName
+    };
+    xhr.send(JSON.stringify(data))   
+}
+
+function RemoveProduct(ProductName, rowid, fieldName, TotalPriceFieldName)
+{
+    let xhr = new XMLHttpRequest();
+        xhr.open("POST", "/Cart/RemoveProduct");
+        xhr.setRequestHeader("Content-Type", "application/json; charset=utf8");
+        xhr.onreadystatechange = function () {
+            if (this.readyState === XMLHttpRequest.DONE) {
+                // receive response from server
+                if (this.status == 200) {
+
+                    //get the quanty to reduce from the cart display from the row that to be deleted
+                    let valField = document.getElementById(fieldName);
+                    let currenFieldVal = parseInt(valField.innerHTML);
+
+                    //update the cart
+                    let cartcontent = document.getElementById("currentCartContents");
+                    let currentVal = parseInt(cartcontent.innerHTML);
+                    cartcontent.innerHTML = currentVal - currenFieldVal;
+                    
+                    var TotalDeletedPrice = parseFloat(document.getElementById(TotalPriceFieldName).innerHTML.replace("$", "").replace(",", ""));
+                    
+                    //update grand total                    
+                   
+                    var GrandTotal = parseFloat(document.getElementById("grandTotal").innerHTML.replace("$", "").replace(",", ""));;
+                    GrandTotal = GrandTotal - TotalDeletedPrice;
+                    document.getElementById("grandTotal").innerHTML =
+                        '$' + GrandTotal.toLocaleString(undefined, {
+                            minimumFractionDigits: 2, maximumFractionDigits: 2
+                        });
+                    //disable checkout button if Grand total is $0.00
+                    if (GrandTotal == 0) {
+                        const CheckoutbuttonTop = document.getElementById("CheckoutbuttonTop");
+                        CheckoutbuttonTop.disabled = true;
+                        const checkoutBtnBottom = document.getElementById("checkoutBtnBottom");
+                        checkoutBtnBottom.disabled = true;
+                    }
+
+                    //delete the table row of product to be deleted 
+                    var row = document.getElementById(rowid);
+                    row.parentNode.removeChild(row);
+                    return;
+                }
+                 //convert from JSON string to JavaScript object
+                let data = JSON.parse(this.responseText);
+                // check availability response
+                if (data.isOkay == false) {
+                    alert("Unable to Remove product from Cart. Try again");
+                }
+            }
+        }
+        let data = {
+            "ProductName": ProductName
+        };
+        xhr.send(JSON.stringify(data))  
+}
+
+
+
 
 
 

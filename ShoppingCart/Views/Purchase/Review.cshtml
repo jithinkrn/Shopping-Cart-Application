@@ -3,7 +3,7 @@
     ViewData["Title"] = "Product";
     Product product = ViewBag.product;
     string uploadDir = ViewBag.uploadDir;
-    string price = String.Format("S${0:0.00}", product.Price);
+    
 
 }
 
@@ -21,9 +21,10 @@
                             <td class="w-15">
                                 <h2>@product.ProductName </h2>
                                 <p>@product.Description </p>
-                                <p><b>@price</b></p>
-                                <p>
-                                    <button type="button" class="btn btn-primary" onclick="AddItemToCart('@product.ProductName')">Buy Again</button>
+                                
+                                <p>                                   
+                                    <button class="btn btn-outline-primary" onclick="AddItemToCart('@product.ProductName')">
+                                    <b>$@product.Price.ToString("0.00")</b>&nbsp;&nbsp;Buy Again</button>
                                 </p>
                             </td>
                         </tr>

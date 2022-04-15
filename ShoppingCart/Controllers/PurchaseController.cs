@@ -22,6 +22,10 @@ namespace ShoppingCart.Controllers{
         {
             // get the customId via session
             Customer currentCustomer = CheckLoggedIn();
+            //Redirect to login if customer try to access purchases without login in
+            if (currentCustomer == null) {
+                return RedirectToAction("Index", "Login");
+            }
 
             // get purchase list via customid
             List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
@@ -51,7 +55,14 @@ namespace ShoppingCart.Controllers{
 
         public IActionResult Review(string prodSclicked)
         {
-            //start of snippet
+            /*Redirect to home if the user trying access by directty typing the url without selecting a
+            product from purchases*/
+            if (prodSclicked == null)
+            {
+                return RedirectToAction("Index", "Login");
+            }
+
+            //Check if the customer has logged in and set current customer
             Customer currentCustomer = new Customer();
             currentCustomer = CheckLoggedIn();
 
@@ -64,14 +75,7 @@ namespace ShoppingCart.Controllers{
             {
                 ViewBag.CurrentUserName = "Guest User";
             }
-            //end of snippet of code
-
-            prodSclicked = ".NET Charts";
-
-            if (prodSclicked == null)
-            {
-                return RedirectToAction("Index", "Gallery");
-            }
+                                  
 
             Product product = getProduct(prodSclicked);
 
@@ -101,7 +105,7 @@ namespace ShoppingCart.Controllers{
            int rating = Convert.ToInt32(form["ratingValue"]);
             string comment = form["reviewComment"];
             Guid productID = Guid.Parse(form["ProductID"]);
-            Debug.Write("ProductId");
+            
             Customer currentCustomer = CheckLoggedIn();                    
             Product product = dbContext.Products.FirstOrDefault(x =>
                 x.Id == productID
@@ -114,7 +118,6 @@ namespace ShoppingCart.Controllers{
                     {
                         Rating = rating,
                         ReviewComment = comment
-
                     };
                     currentCustomer.ProductRatings.Add(productRatingNew);
                     product.ProductRatings.Add(productRatingNew);
