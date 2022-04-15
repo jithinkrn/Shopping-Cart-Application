@@ -1,6 +1,6 @@
 ﻿
 
-//to switch between white star to yellow star uponclick
+//to switch between white star to yellow star uponclick.
 
     let ratingGlobal = 0
     function RateStar(rating) {

@@ -25,49 +25,46 @@ namespace ShoppingCart.Controllers
         {
 
             Customer currentCustomer = CheckLoggedIn();
+
             Dictionary<Product, int> countOfItems = new Dictionary<Product, int>();
             List<Cart> customerCart = new List<Cart>();
             List<GuestCart> guestCart = new List<GuestCart>();
-
             //Seed an item for user
             if (currentCustomer != null)
             {
-                
+
                 Product newProd = FetchRandomProduct();
 
                 db.SaveChanges();
-                
+
                 customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
 
                 foreach (Cart item in customerCart)
-
                 {
+                    Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                    countOfItems.Add(newItem, item.OrderQty);
+                };
 
-                    //Product newProd = FetchRandomProduct();
-                    //AddToCart(newProd.ProductName);
-                    //db.SaveChanges();
+                ViewBag.CurrentUserName = currentCustomer.FullName;
+
+            }
+            else
+            {
+
+                Product newProd = FetchRandomProduct();
 
                 db.SaveChanges();
-                
+
                 guestCart = db.GuestCarts.ToList();
 
-
-                }
-                else
+                foreach (GuestCart item in guestCart)
                 {
+                    Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
+                    countOfItems.Add(newItem, item.OrderQty);
+                };
+                ViewBag.CurrentUserName = "Guest User";
 
-                    //Product newProd = FetchRandomProduct();
-                    //AddToCart(newProd.ProductName);
-                    //db.SaveChanges();
-
-                    guestCart = db.GuestCarts.ToList();
-                    foreach (GuestCart item in guestCart)
-                    {
-                        Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
-                        countOfItems.Add(newItem, item.OrderQty);
-                    };
-                    ViewBag.CurrentUserName = "Guest User";
-                }
+            }
 
             //initializing
 
@@ -291,8 +288,9 @@ namespace ShoppingCart.Controllers
                 ViewBag.CurrentCustomer = currentCustomer;
                 ViewBag.ItemQty = itemQty;
                 ViewBag.ListOfRandomProds = RecommendProducts();
-
+               
                 ViewBag.Reward = currentCustomer.RewardPoint;
+               
                 ViewBag.AdditionalPoint = additionalPoints;
                 //all IActionResult Methods will return this
                 ViewBag.CartContents = CountNumberOfItems();
