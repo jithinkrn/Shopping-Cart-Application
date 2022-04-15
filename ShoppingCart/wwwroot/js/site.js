@@ -133,6 +133,8 @@ function AddItemToCart(ProductName) {
     };
     xhr.send(JSON.stringify(data))
 }
+function updateSelectedCode(dropdownItem) {
+
 
 function RemoveFromCart(ProductName, fieldName, priceFieldName, TotalPriceFielddName) {
 
@@ -298,6 +300,7 @@ function RemoveProduct(ProductName, rowid, fieldName, TotalPriceFieldName)
         };
         xhr.send(JSON.stringify(data))  
 }
+
 
 
 
