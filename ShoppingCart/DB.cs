@@ -26,7 +26,6 @@ namespace ShoppingCart
             SeedProduct();
             SeedProductRating();
                       
-
         }
 
 
@@ -140,8 +139,6 @@ namespace ShoppingCart
                         Product product = dbContext.Products.FirstOrDefault(x =>
                         x.ProductName == prdnm
                     );
-
-
                         if (customer != null && product != null)
                         {
                             Random rnd = new Random();
@@ -156,7 +153,9 @@ namespace ShoppingCart
                         }
                         dbContext.SaveChanges();
                     }
-                }   
+                }            
+        }
+                
 
     }
 }
