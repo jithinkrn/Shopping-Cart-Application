@@ -37,25 +37,24 @@
         </thead>
         <tbody>
             @{
-                int i =0;
+               
                 foreach (KeyValuePair<Product, int> pair in countOfItems)                {
-                    <tr id="row.@i" valign="middle">
+                    <tr id="row.@pair.Key.ProductName" valign="middle">
                         <td class="align-items-md-start"><img src="~/Images/@pair.Key.ImageName" alt="Alternate Text" class="rounded" style="height: 120px; width: 180px" /></td>
                         <td class="text-left" style="word-wrap:break-word; word-break:break-word; width: 35%"><br /><b>@pair.Key.ProductName</b><br />@pair.Key.Description</td>
-                        <td class="text-center"><br /><span id="ProdPrice.@i">$@(pair.Key.Price.ToString("0,0.00"))</span></td>
-                        <td class="text-center"><br /><span id="toatProdPrice.@i">$@((pair.Key.Price*pair.Value).ToString("0,0.00"))</span></td>
+                        <td class="text-center"><br /><span id="ProdPrice.@pair.Key.ProductName">$@(pair.Key.Price.ToString("0,0.00"))</span></td>
+                        <td class="text-center"><br /><span id="toatProdPrice.@pair.Key.ProductName">$@((pair.Key.Price*pair.Value).ToString("0,0.00"))</span></td>
                         <td class="text-center">
                             
                                       <br />
-                                <button id ="minusbtn" onclick = "RemoveFromCart('@pair.Key.ProductName', 'valField.@i', 'ProdPrice.@i', 'toatProdPrice.@i')" class="btn btn-danger" style="margin-left: 3%; margin-right: 3%">-</button>
-                                <span  id="valField.@i" style="margin-left: 3%; margin-right: 3%">@(pair.Value)</span>
-                                <button id ="plusbtn" onclick = "AddtoCart('@pair.Key.ProductName', 'valField.@i', 'ProdPrice.@i', 'toatProdPrice.@i')" class="btn btn-success" style="margin-left: 3%; margin-right: 3%">+</button>
+                                <button id ="minusbtn" onclick = "RemoveFromCart('@pair.Key.ProductName', 'valField.@pair.Key.ProductName', 'ProdPrice.@pair.Key.ProductName', 'toatProdPrice.@pair.Key.ProductName')" class="btn btn-danger" style="margin-left: 3%; margin-right: 3%">-</button>
+                                <span  id="valField.@pair.Key.ProductName" style="margin-left: 3%; margin-right: 3%">@(pair.Value)</span>
+                                <button id ="plusbtn" onclick = "AddtoCart('@pair.Key.ProductName', 'valField.@pair.Key.ProductName', 'ProdPrice.@pair.Key.ProductName', 'toatProdPrice.@pair.Key.ProductName')" class="btn btn-success" style="margin-left: 3%; margin-right: 3%">+</button>
                                      <br />
-                                <button id ="RemoveProd" onclick = "RemoveProduct('@pair.Key.ProductName','row.@i','valField.@i', 'toatProdPrice.@i')" class="btn btn-link" style="margin-left: 5%; margin-right: 5%">Remove</button>
+                                <button id ="RemoveProd" onclick = "RemoveProduct('@pair.Key.ProductName','row.@pair.Key.ProductName','valField.@pair.Key.ProductName', 'toatProdPrice.@pair.Key.ProductName')" class="btn btn-link" style="margin-left: 5%; margin-right: 5%">Remove</button>
                             
                         </td>
-                    </tr>
-                    i++;
+                    </tr>                  
                 }
             }
         <tr class="bg-primary" style="color:white">
