@@ -28,24 +28,29 @@ namespace ShoppingCart.Controllers
             Dictionary<Product, int> countOfItems = new Dictionary<Product, int>();
             List<Cart> customerCart = new List<Cart>();
             List<GuestCart> guestCart = new List<GuestCart>();
-                       
 
-           // Seed an item for user
+            //Seed an item for user
             if (currentCustomer != null)
+            {
+                
+                Product newProd = FetchRandomProduct();
+
+                db.SaveChanges();
+                
+                customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+
+                foreach (Cart item in customerCart)
+
                 {
 
                     //Product newProd = FetchRandomProduct();
                     //AddToCart(newProd.ProductName);
                     //db.SaveChanges();
 
-                    customerCart = db.Carts.Where(x => x.CustomerId == currentCustomer.Id).ToList();
+                db.SaveChanges();
+                
+                guestCart = db.GuestCarts.ToList();
 
-                    foreach (Cart item in customerCart)
-                    {
-                        Product newItem = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
-                        countOfItems.Add(newItem, item.OrderQty);
-                    };
-                    ViewBag.CurrentUserName = currentCustomer.FullName;
 
                 }
                 else
@@ -287,8 +292,6 @@ namespace ShoppingCart.Controllers
                 ViewBag.ItemQty = itemQty;
                 ViewBag.ListOfRandomProds = RecommendProducts();
 
-                //ViewBag.TotalPrice = totalPrice;
-
                 ViewBag.Reward = currentCustomer.RewardPoint;
                 ViewBag.AdditionalPoint = additionalPoints;
                 //all IActionResult Methods will return this
@@ -338,15 +341,11 @@ namespace ShoppingCart.Controllers
                     Product takePrice = db.Products.FirstOrDefault(x => x.Id == item.ProductId);
                     //get the product price and multiply the quantity
                     double priceToAdd = takePrice.Price * item.OrderQty;
-                    /*
-                    for any discount logic concerning the price, put them here
-                    */
+
                     finalPrice += priceToAdd;
                 }
             }
-            /*
-            for any other discount logic concerning the price, put them here
-            */
+
             return finalPrice;
         }
         //count number of items
@@ -427,6 +426,15 @@ namespace ShoppingCart.Controllers
                 currentCustomer = null;
             }
             return currentCustomer;
+        }
+
+        public IActionResult PassToCart([FromBody] ProdJson prodJson)
+        {
+            string ProductName = prodJson.ProductName;
+
+            AddToCart(ProductName);
+
+            return Json(new { isOkay = true });
         }
     }
 }

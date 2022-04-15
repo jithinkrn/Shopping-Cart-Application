@@ -112,10 +112,12 @@ function AddItemToCart(ProductName) {
         if (this.readyState === XMLHttpRequest.DONE) {
             // receive response from server
             if (this.status == 200) {
+
                 //alert("Item added to your cart")        
                 let cartcontent = document.getElementById("currentCartContents");
                 let currentVal = parseInt(cartcontent.innerHTML);            
                 cartcontent.innerHTML = currentVal + 1;
+
                 return;
             }
             // convert from JSON string to JavaScript object
