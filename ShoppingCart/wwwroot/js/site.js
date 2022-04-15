@@ -270,6 +270,14 @@ function RemoveProduct(ProductName, rowid, fieldName, TotalPriceFieldName)
                         '$' + GrandTotal.toLocaleString(undefined, {
                             minimumFractionDigits: 2, maximumFractionDigits: 2
                         });
+                    //disable checkout button if Grand total is $0.00
+                    if (GrandTotal == 0) {
+                        const CheckoutbuttonTop = document.getElementById("CheckoutbuttonTop");
+                        CheckoutbuttonTop.disabled = true;
+                        const checkoutBtnBottom = document.getElementById("checkoutBtnBottom");
+                        checkoutBtnBottom.disabled = true;
+                    }
+
                     //delete the table row of product to be deleted 
                     var row = document.getElementById(rowid);
                     row.parentNode.removeChild(row);
