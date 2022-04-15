@@ -25,7 +25,7 @@ namespace ShoppingCart
             SeedCustomer();
             SeedProduct();
             //SeedProductRating();
-            SeedPurchase();
+            //SeedPurchase();
 
         }
 
@@ -153,13 +153,7 @@ namespace ShoppingCart
             );
 
             if (customer != null && product != null)
-            {
-
-                //dbContext.Add(new ActivationCode
-                //{
-                  
-                //});              
-
+            {          
                 Purchase purchase = new Purchase
                 {
                     ProductId = product.Id,

@@ -129,7 +129,12 @@ function AddItemToCart(ProductName) {
     };
     xhr.send(JSON.stringify(data))
 }
+function updateSelectedCode(dropdownItem) {
 
+    let elem = getElementById("dropdownItem");
+    elem.
+
+}
 
 
 

@@ -23,9 +23,8 @@ namespace ShoppingCart.Controllers{
             // get the customId via session
             Customer currentCustomer = CheckLoggedIn();
 
-            // get purchase list via customid
+            // get purchase list via CustomerId
             List<Purchase> purchases = dbContext.Purchases.Where(item => item.CustomerId.Equals(currentCustomer.Id)).ToList();
-
             Dictionary<Guid, Product> maps = new Dictionary<Guid, Product>();
             Dictionary<Guid, ActivationCode[]> activeCodeMap = new Dictionary<Guid, ActivationCode[]>();
 
