@@ -13,6 +13,7 @@ namespace ShoppingCart.Models
             ShoppingCarts = new List<Cart>();
             Purchases = new List<Purchase>();
             ProductRatings = new List<ProductRating>();
+            RewardPoint = 0;
         }
     
         //primary key
@@ -31,7 +32,7 @@ namespace ShoppingCart.Models
         public byte[] PassHash { get; set; }
 
         //Reward points earned. Can be null as well
-        public int? RewardPoint { get; set; }
+        public int RewardPoint { get; set; }
 
         //Customer has 1 to many relationship with ShoppingCart
         public virtual ICollection<Cart> ShoppingCarts { get; set; }
