@@ -6,6 +6,17 @@
     string customerName = ViewBag.CurrentUserName;
 }
 
+<script>
+    function toggleItems() {
+        $('.dropdown-menu').toggleClass('open');
+    }
+
+    $('.dropdown-menu li').click(function () {
+        var text = $(this).text(); // get text of the clicked item
+        $(".dropdown-toggle").text(text); // set text text to the button (dropdown)
+    });
+</script>
+
 <div class="container">
     <h1>@(customerName)'s Purchases </h1>
     <div class="nav form-check-inline justify-content-end">
@@ -25,24 +36,6 @@
             </tr>
         </thead>
         <tbody>
-
-
-            @* Can delete this piece of code?
-                @{
-                 if(purchases.Count == 0){
-                     <div class="container">
-                         <div class="text-center p-5">
-                             <h2>No results... :(</h2>
-                         </div>
-                     </div>
-                   }
-                 else{
-                     <div class="container">
-                         <div class="row">
-                   }
-                 }End of Can delete this piece of code? *@
-
-
             @{
                 foreach (var purchase in purchases)
                 {
@@ -50,33 +43,26 @@
                         <td class="centered"><img src="~/Images/@productMaps.GetValueOrDefault(purchase.Id).ImageName" alt="Alternate Text" class="rounded" style="height: 120px; width: 180px" /></td>
                         <td class="text-left" align="center" style="word-wrap:break-word; word-break:break-word; width: 35%">
                             <br /><b>@productMaps.GetValueOrDefault(purchase.Id).ProductName</b><br />@productMaps.GetValueOrDefault(purchase.Id).Description<br />
-                            <br /><b style="color:steelblue"><i>Actication Codes:</i></b>
+                            <br /><b style="color:steelblue"><i>Activation Codes:</i></b>
                             <br /><b>
                                 @{
-                                    ActivationCode[] activationCodes = activeCodeMap.GetValueOrDefault(purchase.Id);
-                                    if (activationCodes.Length == 1)
-                                    {
-                                        <span>@activationCodes[0].Id</span>
-                                    }
-                                    else if (activationCodes.Length > 1)
-                                    {
-                                        <b class="dropdown">
-                                            <button class="btn btn-info dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                                @activationCodes[0].Id
-                                            </button>
-                                            <b class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                                                @{ int i = 0;
-                                                    foreach (var activationCode in activationCodes)
-                                                    {
-                                                        <a id="list.@i" class="dropdown-item"> @activationCode.Id</a> @*one activation key*@
-
-                                                        i++;
-                                                    }
-                                                }
-
-                                            </b>
-                                        </b>
-                                    }
+                                  ActivationCode[] activationCodes = activeCodeMap.GetValueOrDefault(purchase.Id);
+                                  if (activationCodes.Length == 1)
+                                  {
+                                      <span>@activationCodes[0].Id</span>
+                                  }
+                                  else if (activationCodes.Length > 1)
+                                  {
+                                      <select id="select" class="btn btn-info dropdown-toggle">
+                                          @{foreach (var activationCode in activationCodes)
+                                              {
+                                                 <option class="dropdown-item" style="background-color: white; text-align:left">
+                                                      @activationCode.Id
+                                                 </option>
+                                              }
+                                          }
+                                      </select>
+                                  }
                                 }
                             </b>
                         </td>
@@ -89,13 +75,6 @@
                             </form>
                         </td>
                     </tr>
-
-
-
-
-
-
-
 
 
                 }
