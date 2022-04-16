@@ -100,14 +100,16 @@ function ValidateReview()
         else {
             document.getElementById("ratingDummyInput").value = ratingGlobal;
             //show alert to to Thank for reviewing            
-            $('#reviewSubmitted').modal('show');            
-                return false;
-            
+            $('#reviewSubmitted').modal('show');
+            $("#reviewSubmitted").on("hidden.bs.modal", function () {
+                const form = document.getElementById('reviewForm');
+                form.submit();
+            });
+                return false;            
         }
 }
 
 function setSubmitOK() {
-
     const form = document.getElementById('reviewForm');
     form.submit();
 }
