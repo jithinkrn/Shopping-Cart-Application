@@ -2,7 +2,8 @@
 
 //to switch between white star to yellow star uponclick.
 
-    let ratingGlobal = 0
+let ratingGlobal = 0
+var submitOK = false;
     function RateStar(rating) {
         switch (rating) {
             case 1:
@@ -97,16 +98,21 @@ function ValidateReview()
             return false;
         }
         else {
-
             document.getElementById("ratingDummyInput").value = ratingGlobal;
-
-            //show alert to to Thank for reviewing
+            //show alert to to Thank for reviewing            
             $('#reviewSubmitted').modal('show');
-            e.preventDefault();                   
-            return true;
+            if (submitOK == false){
+                return false;
+            } 
         }
 }
 
+function setSubmitOK() {
+
+    var submitOK = true;
+    const form = document.getElementById('reviewForm');
+    form.submit();
+}
 
 
 //Ad to cart AJAX without refreshin
