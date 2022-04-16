@@ -3,7 +3,7 @@
 //to switch between white star to yellow star uponclick.
 
 let ratingGlobal = 0
-var submitOK = false;
+
     function RateStar(rating) {
         switch (rating) {
             case 1:
@@ -100,16 +100,14 @@ function ValidateReview()
         else {
             document.getElementById("ratingDummyInput").value = ratingGlobal;
             //show alert to to Thank for reviewing            
-            $('#reviewSubmitted').modal('show');
-            if (submitOK == false){
+            $('#reviewSubmitted').modal('show');            
                 return false;
-            } 
+            
         }
 }
 
 function setSubmitOK() {
 
-    var submitOK = true;
     const form = document.getElementById('reviewForm');
     form.submit();
 }
