@@ -92,16 +92,22 @@
 function ValidateReview()
 {
         if (ratingGlobal == 0) {
-            alert("Please rate the product");
+            //show alert to rate the product before submitting
+            $('#rateProduct').modal('show');            
             return false;
         }
         else {
+
             document.getElementById("ratingDummyInput").value = ratingGlobal;
-            //alert(document.getElementById("ratingDummyInput").value)
-            alert("Thank you for you review!");
-            //return true;
+
+            //show alert to to Thank for reviewing
+            $('#reviewSubmitted').modal('show');
+            e.preventDefault();                   
+            return true;
         }
 }
+
+
 
 //Ad to cart AJAX without refreshin
 function AddItemToCart(ProductName) {     
@@ -113,7 +119,8 @@ function AddItemToCart(ProductName) {
             // receive response from server
             if (this.status == 200) {
 
-                alert("Item added to your cart")        
+                //alert("Item added to your cart");
+                $('#ItemAdded').modal('show');
                 let cartcontent = document.getElementById("currentCartContents");
                 let currentVal = parseInt(cartcontent.innerHTML);            
                 cartcontent.innerHTML = currentVal + 1;
